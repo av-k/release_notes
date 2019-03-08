@@ -17,7 +17,7 @@ export default function home(props = {}) {
       return accumulator;
     }, {});
 
-    const results = await Application.findAll({
+    const results = await Application.findAndCountAll({
       where,
       ...(() => !pagination ? {} : {
         offset: page * limit,
@@ -25,8 +25,8 @@ export default function home(props = {}) {
       })()
     });
     return {
-      results,
-      totalCount: results.length
+      results: results.rows,
+      totalCount: results.count
     };
   }
 

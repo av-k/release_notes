@@ -1,0 +1,33 @@
+/**
+ * Colors
+ */
+
+//white
+$rn-white:#fff;
+
+//ink
+$rn-ink-lighter:#959fa8;
+$rn-ink-light:#637381;
+$rn-ink:#1b2126;
+$rn-ink-dark:$rn-ink;
+$rn-ink-darker:$rn-ink;
+
+//grey
+$rn-notquitewhite: #f8f9fa;
+$rn-grey-lighter: #fafafb;
+$rn-grey-light: #f2f3f5;
+$rn-grey: #dfe3e8;
+$rn-grey-dark: #cdd1d5;
+$rn-grey-darker: #b7bbbe;
+$rn-grey-darkest: $rn-ink;
+
+/**
+ * Globals
+ */
+$rn-site-bg: $rn-notquitewhite;
+$rn-body-text: $rn-grey-darkest;
+$rn-border-radius: 10px;
+$rn-content-padding: 15px;
+$rn-site-bg: $rn-white;
+
+$rn-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);

@@ -17,17 +17,16 @@ export default function home(props = {}) {
       return accumulator;
     }, {});
 
-    const results = await Note.findAll({
+    const results = await Note.findAndCountAll({
       where,
       ...(() => !pagination ? {} : {
         offset: page * limit,
         limit: limit
       })()
     });
-
     return {
-      results,
-      totalCount: results.length
+      results: results.rows,
+      totalCount: results.count
     };
   }
 

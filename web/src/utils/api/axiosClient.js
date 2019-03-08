@@ -9,7 +9,7 @@ class AxiosClient {
     });
 
     const localAxios = axios.create({
-      baseURL: `${this._API_URL}/api/v${this._API_VERSION}`,
+      baseURL: `http://${this._API_HOST}${this._API_PORT ? `:${this._API_PORT}` : ''}/v${this._API_VERSION}`,
       timeout: 5000,
     });
 

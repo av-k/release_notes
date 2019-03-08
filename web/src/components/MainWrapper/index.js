@@ -3,7 +3,7 @@ import { Wrapper } from './index.styled';
 import PT from 'prop-types';
 
 const MainWrapper = props => (
-  <Wrapper>{props.children}</Wrapper>
+  <Wrapper {...props.params}>{props.children}</Wrapper>
 );
 
 MainWrapper.propTypes = {

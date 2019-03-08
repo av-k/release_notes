@@ -11,7 +11,7 @@ import MainWrapper from '../../components/MainWrapper';
 function Root({ store }) {
   return (
     <Provider store={store}>
-      <MainWrapper>
+      <MainWrapper params={{id: 'root-wrapper'}}>
         <Helmet itleTemplate="%s - Release Notes"
                 defaultTitle="Release Notes">
           <meta name="description" content="Sample Application" />

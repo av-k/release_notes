@@ -1,7 +1,7 @@
 @mixin divider() {
   display: block;
   border: 0;
-  border-top: 1px solid $vc-grey;
+  border-top: 1px solid $rn-grey;
   &.divider-solid {
     border-style: solid;
   }

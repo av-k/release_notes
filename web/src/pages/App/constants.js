@@ -1,7 +1,0 @@
-// export const LOAD_REPOS = 'boilerplate/App/LOAD_REPOS';
-// export const LOAD_REPOS_SUCCESS = 'boilerplate/App/LOAD_REPOS_SUCCESS';
-// export const LOAD_REPOS_ERROR = 'boilerplate/App/LOAD_REPOS_ERROR';
-
-export const LOAD_APPLICATIONS_LIST = 'LOAD_APPLICATIONS_LIST';
-export const LOAD_APPLICATIONS_SUCCESS = 'LOAD_APPLICATIONS_SUCCESS';
-export const LOAD_APPLICATIONS_ERROR = 'LOAD_APPLICATIONS_ERROR';

@@ -6,7 +6,13 @@ import boot from './boot';
 // Configurations
 const server = Hapi.server({
   host: config.HOST,
-  port: config.PORT
+  port: config.PORT,
+  routes: {
+    cors: {
+      origin: ['*'],
+      additionalHeaders: ['cache-control', 'x-requested-with']
+    }
+  }
 });
 
 // Start up

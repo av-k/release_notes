@@ -1,7 +1,8 @@
 'use strict';
 const defaultEnvVariables = {
   NODE_ENV: 'development',
-  HOST: 'localhost',
+  VERSION: 1,
+  HOST: '0.0.0.0',
   PORT: 3010,
   DB_HOST: '0.0.0.0',
   DB_NAME: 'adnotes',

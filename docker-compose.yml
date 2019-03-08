@@ -9,6 +9,8 @@ services:
       - "./api/src:/app/src"
     environment:
       NODE_ENV: ${NODE_ENV}
+      VERSION: ${API_VERSION}
+      HOST: ${API_HOST}
       PORT: ${API_PORT}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -26,6 +28,11 @@ services:
 #    restart: always
 #    volumes:
 #      - "./web/src:/app/src"
+#    environment:
+#      NODE_ENV: ${NODE_ENV}
+#      API_VERSION: ${API_VERSION}
+#      API_HOST: ${API_HOST}
+#      API_PORT: ${API_PORT}
 #    ports:
 #      - ${WEB_PORT}:${WEB_PORT}
 #    depends_on:

@@ -2,6 +2,19 @@
 import path from 'path';
 import glob from 'glob';
 import pagination from 'hapi-pagination';
+//
+import config from '../config';
+
+const ROUTER_PREFIX = `/v${config.VERSION}`;
+
+/**
+ *
+ * @param pathWithoutPrefix
+ * @returns {string}
+ */
+export function makeRouterPath(pathWithoutPrefix) {
+  return `${ROUTER_PREFIX}${pathWithoutPrefix}`;
+}
 
 /**
  *
@@ -28,6 +41,10 @@ function extendWithHelpers(props = {}) {
   server.app.helpers.routerPayloadHandler = payloadHandler;
 }
 
+/**
+ *
+ * @param props
+ */
 function bindResponsesPagination(props = {}) {
   const { server } = props;
   const options = {
@@ -47,12 +64,19 @@ function bindResponsesPagination(props = {}) {
       },
       invalid: 'defaults'
     },
+    meta: {
+      page: {
+        active: true
+      },
+    },
     routes: {
-      include: ['*'],
-      exclude: []
+      include: [
+        /application/,
+        /note/
+      ]
     }
   };
-  server.register(pagination, options);
+  server.register({ plugin: pagination, options });
 }
 
 /**
@@ -64,7 +88,7 @@ export async function run(props = {}) {
   const normalizedPath = path.join(__dirname, dir);
 
 
-  server.realm.modifiers.route.prefix = '/v1';
+  server.realm.modifiers.route.prefix = ROUTER_PREFIX;
   bindResponsesPagination({ server });
   extendWithHelpers({ server });
 

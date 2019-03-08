@@ -1,6 +1,7 @@
 const path = require('path');
 const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const makePath = to => path.resolve(__dirname, to);
+const config = require('../bin');
 
 module.exports = {
   entry: './src',
@@ -16,7 +17,13 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'],
+            presets: [
+              [
+                "@babel/preset-env",
+                { "targets": { "node": "current" } }
+              ],
+              '@babel/preset-react'
+            ],
             plugins: [
               ['@babel/plugin-proposal-decorators', { legacy: true }],
               '@babel/plugin-proposal-class-properties',
@@ -62,14 +69,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx', '.css'],
-    alias: {
-      library: makePath('../src/lib/'),
-      pages: makePath('../src/pages/'),
-      components: makePath('../src/components/'),
-      config: makePath('../src/config'),
-      utils: makePath('../src/utils'),
-      node_modules: makePath('../node_modules')
-    },
+    alias: getAlias(),
     plugins: [
       new DirectoryNamedWebpackPlugin({
         honorIndex: true,
@@ -82,3 +82,15 @@ module.exports = {
     ]
   }
 };
+
+function getAlias() {
+  return {
+    library: makePath('../src/lib/'),
+    pages: makePath('../src/pages/'),
+    components: makePath('../src/components/'),
+    config: makePath('../src/config'),
+    utils: makePath('../src/utils'),
+    node_modules: makePath('../node_modules'),
+    "@environment$": makePath('../bin'),
+  };
+}

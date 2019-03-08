@@ -21,13 +21,25 @@ class MainMenu extends React.PureComponent {
     }
   };
 
+  getStyle = (props = {}) => {
+    const { style } = props;
+    const defaultStyle = {
+      textAlign: 'center',
+      position: 'relative',
+      boxShadow: '0 0 5px 3px rgba(0,0,0, 0.25)'
+    };
+
+    return {...defaultStyle, ...style};
+  };
+
   render() {
     const { style = {}, router } = this.props;
     const currentKey = this.getCurrentKeyFromRouter({ router });
 
+
     return (
       <Menu
-        style={style}
+        style={this.getStyle({ style })}
         onClick={this.handleClick}
         selectedKeys={[currentKey]}
         mode="horizontal" >

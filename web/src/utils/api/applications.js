@@ -1,7 +1,9 @@
-import axios from 'helpers/api/axiosClient';
+import { getAxios } from './axiosClient';
 
-export function getUsers(options) {
-  return axios.get('/profiles', { params: { ...options } });
+const axios = getAxios();
+
+export function loadApplications(options) {
+  return axios.get('/application/list', { params: { ...options } });
 }
 
 export function getUser(id) {
