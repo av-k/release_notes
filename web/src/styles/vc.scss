@@ -1,0 +1,33 @@
+/**
+ * Colors
+ */
+
+//white
+$vc-white:#fff;
+
+//ink
+$vc-ink-lighter:#959fa8;
+$vc-ink-light:#637381;
+$vc-ink:#1b2126;
+$vc-ink-dark:$vc-ink;
+$vc-ink-darker:$vc-ink;
+
+//grey
+$vc-notquitewhite: #f8f9fa;
+$vc-grey-lighter:#fafafb;
+$vc-grey-light:#f2f3f5;
+$vc-grey:#dfe3e8;
+$vc-grey-dark:#cdd1d5;
+$vc-grey-darker:#b7bbbe;
+$vc-grey-darkest:$vc-ink;
+
+/**
+ * Globals
+ */
+$vc-site-bg:$vc-notquitewhite;
+$vc-body-text: $vc-grey-darkest;
+$vc-border-radius: 10px;
+$vc-content-padding: 15px;
+$vq-site-bg: $vc-white;
+
+$vc-shadow:0 1px 6px rgba(0, 0, 0, 0.2);

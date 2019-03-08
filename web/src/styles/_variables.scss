@@ -1,0 +1,10 @@
+// global variables
+// required for vc skin
+
+// instantiates the vc colours and brands for re-use
+@import "vc";
+
+// bootstrap overrides
+@import "global/variables-bootstrap";
+@import "global/variables-extra";
+@import "layout/variables-layout";

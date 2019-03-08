@@ -1,0 +1,10 @@
+FROM node:carbon
+WORKDIR /app
+RUN npm install -g nodemon serve
+COPY package*.json ./
+RUN npm install
+COPY api /app
+RUN npm run build
+EXPOSE 8080
+CMD [ "nodemon", "server.js" ]
+CMD ["serve", "-s", "dist", "-p", "8080"]

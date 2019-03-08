@@ -1,0 +1,48 @@
+ul.overlay {
+  height: 100vh;
+  position: absolute;
+  right: 2.5%;
+  top: 80px;
+  z-index: 5;
+}
+
+ul.overlay li {
+  cursor: pointer;
+  flex-shrink: 0;
+  max-height: 400px;
+  width: 180px;
+  margin: auto;
+  margin-bottom: 20px;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 1.3rem;
+  overflow-wrap: break-word;
+  overflow: scroll;
+}
+
+ul.overlay .overlay-success {
+  background: var(--success);
+}
+
+ul.overlay .overlay-failure {
+  background: var(--error);
+}
+
+@media(min-width: 980px) {
+  ul.overlay {
+    display: flex;
+    flex-flow: column;
+    width: 945px;
+    z-index: -1;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  ul.overlay li {
+    margin-top: 0;
+    margin-right: 0;
+    margin-left: auto;
+    z-index: 1;
+  }
+}
