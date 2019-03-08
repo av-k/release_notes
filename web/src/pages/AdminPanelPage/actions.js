@@ -20,14 +20,7 @@ import * as applicationsRequests from 'utils/api/applications'
 export function loadApplications(filter) {
   return async (dispatch, getState) => {
     const { adminPanel } = getState();
-    // const payload = {};
     const storeFilter = lodash.get(adminPanel, 'applications.filter', {});
-
-    // if (filter) {
-    //   payload.filter = filter;
-    // } else if (Object.keys(storeFilter).length) {
-    //   payload.filter = adminPanel.applications.filter;
-    // }
 
     dispatch({
       type: LOAD_APPLICATIONS_LIST

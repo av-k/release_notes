@@ -1,6 +1,7 @@
 export const ROUTES = {
   'HOME': '/',
   'ADMIN_PANEL': '/admin-panel',
-  'APPLICATION': '/application/:id',
+  'APPLICATION_INFO': '/application/info/:id',
+  'APPLICATION_EDIT': '/application/edit/:id',
   'LOGIN': '/login'
 };

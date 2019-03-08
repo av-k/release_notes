@@ -67,6 +67,8 @@ class AdminPanelPage extends React.PureComponent {
                          loading={applications.loading}
                          pageSize={pageSize}
                          defaultCurrent={currentPage + 1}
+                         onEdit={this.appsTableOnEdit}
+                         onDelete={this.appsTableOnDelete}
                          onChange={(props) => this.appsTableOnChange({pageSize, ...props})} />
     );
   };
@@ -76,6 +78,14 @@ class AdminPanelPage extends React.PureComponent {
     const { page, pageSize } = props;
     loadApplications({ page: page - 1, limit: pageSize });
     push(`${location.pathname}?page=${page - 1}`);
+  };
+
+  appsTableOnEdit = (props = {}) => {
+    console.info('EDIT: ', props);
+  };
+
+  appsTableOnDelete = (props = {}) => {
+    console.info('DELETE: ', props);
   };
 
   createApplicationHandler = (values) => {

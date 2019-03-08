@@ -13,7 +13,7 @@ import ApplicationsTable from 'components/ApplicationsTable/index';
 
 
 @connect(mapStateToProps, mapDispatchToProps)
-class ApplicationPage extends React.PureComponent {
+class ApplicationInfoPage extends React.PureComponent {
   applicationId = null;
   errorsIds = [];
 
@@ -98,4 +98,4 @@ const withReducer = injectReducer({ key: 'application', reducer });
 
 export default compose(
   withReducer,
-)(ApplicationPage);
+)(ApplicationInfoPage);

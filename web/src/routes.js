@@ -4,7 +4,8 @@ import { ConnectedRouter } from 'connected-react-router'
 //
 import App from 'pages/App';
 import HomePage from 'pages/HomePage/Loadable';
-import ApplicationPage from 'pages/ApplicationPage/Loadable';
+import ApplicationInfoPage from 'pages/ApplicationInfoPage/Loadable';
+import ApplicationEditPage from 'pages/ApplicationEditPage/Loadable';
 import NotFoundPage from 'pages/NotFoundPage/Loadable';
 import { history } from './store';
 import { ROUTES } from './config/constants';
@@ -24,7 +25,25 @@ export const routes = (
       />
       <Route
         exact
-        path={ROUTES.APPLICATION}
+        path={ROUTES.APPLICATION_INFO}
+        render={(props) => (
+          <App>
+            <ApplicationInfoPage {...props} />
+          </App>
+        )}
+      />
+      <Route
+        exact
+        path={ROUTES.APPLICATION_EDIT}
+        render={(props) => (
+          <App>
+            <ApplicationEditPage {...props} />
+          </App>
+        )}
+      />
+      <Route
+        exact
+        path={ROUTES.APPLICATION_EDIT}
         render={(props) => (
           <App>
             <ApplicationPage {...props} />
