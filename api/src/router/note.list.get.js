@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import Joi from 'joi';
 
-export default function home(props = {}) {
+export default function notesList(props = {}) {
   const { server } = props;
 
   async function handler(request, h) {

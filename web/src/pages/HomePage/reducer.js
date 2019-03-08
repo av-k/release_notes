@@ -21,7 +21,8 @@ function reducer(state = initialState, action = {}) {
     case LOAD_APPLICATIONS_LIST:
       return updateState(state, {
         applications: {
-          loading: true
+          loading: true,
+          error: null
         }
       });
 
@@ -29,6 +30,7 @@ function reducer(state = initialState, action = {}) {
       return updateState(state, {
         applications: {
           loading: false,
+          error: null,
           ...payload
         }
       });

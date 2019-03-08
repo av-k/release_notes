@@ -1,8 +1,11 @@
 import React, { Fragment } from 'react';
-import { Table, Pagination } from 'antd';
+import { Link } from 'react-router-dom';
+import { Table, Pagination, Icon } from 'antd';
 import lodash from 'lodash';
 import moment from 'moment';
 import uuid from 'uuid';
+//
+import { ROUTES } from 'config/constants';
 
 const DATA_FORMAT = 'YYYY-MM-DD HH:mm';
 const columns = [
@@ -15,7 +18,11 @@ const columns = [
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
-    render: text => <a href="javascript:;">{text}</a>
+    render: (text, data) => {
+      return (
+        <Link to={ROUTES.APPLICATION.replace(':id', data.id)}>{text}</Link>
+      );
+    }
   },
   {
     title: 'Created',
@@ -26,11 +33,10 @@ const columns = [
   {
     title: 'Action',
     key: 'action',
-    render: (text, record) => (
-      <span>
-        <a href="javascript:;">Show Notes</a>
-      </span>
-    ),
+    render: (text, data) => <Link to={ROUTES.APPLICATION.replace(':id', data.id)}>
+      <Icon type="select" />
+      <span>&nbsp;Notes</span>
+    </Link>
   }
 ];
 
@@ -40,9 +46,10 @@ class ApplicationTable extends React.PureComponent {
   };
 
   render() {
-    const { data, loading, pageSize } = this.props;
+    const { data, loading, pageSize, defaultCurrent } = this.props;
+    const results = lodash.get(data, 'results', []);
     const totalCount = lodash.get(data, 'meta.totalCount', 0);
-    const dataSource = data.results.map(item => {
+    const dataSource = results.map(item => {
       item.key = uuid.v4();
       return item;
     });
@@ -57,7 +64,7 @@ class ApplicationTable extends React.PureComponent {
                       marginTop: '30px',
                       textAlign: 'center'
                     }}
-                    defaultCurrent={data.meta.page + 1}
+                    defaultCurrent={defaultCurrent}
                     pageSize={pageSize}
                     total={totalCount}
                     onChange={this.onChange} />

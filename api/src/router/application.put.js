@@ -1,8 +1,8 @@
 'use strict';
 import Joi from 'joi';
 import _ from 'lodash';
-
-export default function home(props = {}) {
+// FIXME - next step > to check headers.Authorization
+export default function applicationCreate(props = {}) {
   const { server } = props;
 
   async function handler(request, h) {

@@ -1,29 +1,26 @@
 import { getAxios } from './axiosClient';
 
-const axios = getAxios();
-
 export function loadApplications(options) {
+  const axios = getAxios();
   return axios.get('/application/list', { params: { ...options } });
 }
 
-export function getUser(id) {
-  return axios.get(`/profiles/${id}`);
+export function loadApplication(id, options) {
+  const axios = getAxios();
+  return axios.get(`/application/${id}`, { params: { ...options } });
 }
 
-export function createUser(data) {
-  return axios.post('/users', data);
+export function createApplication(data) {
+  const axios = getAxios();
+  return axios.put('/application/create', data);
 }
 
-export function updateUser(id, data) {
-  return axios.put(`/users/${id}`, data);
+export function updateApplication(id, options) {
+  const axios = getAxios();
+  return axios.post(`/application/${id}`, options);
 }
 
-export function updateUserStatus(id, status) {
-  return axios.put(`/users/${id}/status`, { status });
-}
-
-export const uploadAvatarUrl = '/users/resources';
-
-export function getCsv(options) {
-  return axios.get('/profiles/csv', { params: { ...options } });
+export function deleteApplication(id) {
+  const axios = getAxios();
+  return axios.post(`/application/${id}`);
 }

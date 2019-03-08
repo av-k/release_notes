@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
@@ -7,14 +6,15 @@ import lodash from 'lodash';
 import { toast } from 'react-toastify';
 //
 import reducer from './reducer';
-import * as homeActions from './actions';
+import * as applicationActions from './actions';
 import injectReducer from '../../utils/injectReducer';
 import { Wrapper, NoDataWrapper } from './index.styled';
-import ApplicationsTable from 'components/ApplicationsTable';
+import ApplicationsTable from 'components/ApplicationsTable/index';
 
 
 @connect(mapStateToProps, mapDispatchToProps)
-class HomePage extends React.PureComponent {
+class ApplicationPage extends React.PureComponent {
+  applicationId = null;
   errorsIds = [];
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -22,12 +22,13 @@ class HomePage extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { loadApplications } = this.props;
-    loadApplications();
+    this.applicationId = lodash.get(this, 'props.match.params.id', null);
+    const { loadApplication } = this.props;
+    loadApplication(this.applicationId);
   }
 
   errorsHandler = () => {
-    const currentApps = lodash.get(this, 'props.home.applications', {});
+    const currentApps = lodash.get(this, 'props.application.applications', {});
 
     if (currentApps.error && !this.errorsIds.includes(currentApps.error.id)) {
       this.errorsIds.push(currentApps.error.id);
@@ -37,8 +38,8 @@ class HomePage extends React.PureComponent {
     }
   };
 
-  getTableContent = () => {
-    const { applications } = this.props.home;
+  getContent = () => {
+    const { applications } = this.props.application;
     const count = lodash.get(applications, 'meta.count', 0);
     const pageSize = 10;
 
@@ -68,38 +69,33 @@ class HomePage extends React.PureComponent {
     return (
       <article>
         <Helmet>
-          <title>Applications List</title>
+          <title>Application</title>
           <meta
             name="description"
-            content="Applications List"
+            content="Application Release Notes"
           />
         </Helmet>
         <Wrapper>
-          {this.getTableContent()}
+          {/*{this.getContent()}*/}
         </Wrapper>
       </article>
     );
   }
 }
 
-HomePage.propTypes = {
-  loading: PropTypes.bool,
-  onSubmitForm: PropTypes.func
-};
-
 function mapStateToProps(state = {}) {
-  const { home } = state;
-  return { home };
+  const { application } = state;
+  return { application };
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    loadApplications: bindActionCreators(homeActions.loadApplications, dispatch),
+    loadApplication: bindActionCreators(applicationActions.loadApplication, dispatch),
   };
 }
 
-const withReducer = injectReducer({ key: 'home', reducer });
+const withReducer = injectReducer({ key: 'application', reducer });
 
 export default compose(
   withReducer,
-)(HomePage);
+)(ApplicationPage);

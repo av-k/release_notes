@@ -71,8 +71,8 @@ function bindResponsesPagination(props = {}) {
     },
     routes: {
       include: [
-        /application/,
-        /note/
+        /application\/list/,
+        /note\/list/
       ]
     }
   };

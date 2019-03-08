@@ -4,16 +4,18 @@ import { ConnectedRouter } from 'connected-react-router'
 //
 import App from 'pages/App';
 import HomePage from 'pages/HomePage/Loadable';
+import ApplicationPage from 'pages/ApplicationPage/Loadable';
 import NotFoundPage from 'pages/NotFoundPage/Loadable';
 import { history } from './store';
 import { ROUTES } from './config/constants';
+import AdminPanelPage from "./pages/AdminPanelPage";
 
 export const routes = (
   <ConnectedRouter history={history}>
     <Switch>
       <Route
         exact
-        path={ROUTES.HOME_PAGE}
+        path={ROUTES.HOME}
         render={(props) => (
           <App>
             <HomePage {...props} />
@@ -22,10 +24,19 @@ export const routes = (
       />
       <Route
         exact
+        path={ROUTES.APPLICATION}
+        render={(props) => (
+          <App>
+            <ApplicationPage {...props} />
+          </App>
+        )}
+      />
+      <Route
+        exact
         path={ROUTES.ADMIN_PANEL}
         render={(props) => (
           <App>
-            <NotFoundPage {...props} />
+            <AdminPanelPage {...props} />
           </App>
         )}
       />

@@ -46,6 +46,7 @@
     "lodash": "^4.17.10",
     "moment": "^2.24.0",
     "prop-types": "^15.6.2",
+    "query-string": "^6.3.0",
     "react": "^16.4.0",
     "react-autobind": "^1.0.6",
     "react-dom": "^16.4.0",

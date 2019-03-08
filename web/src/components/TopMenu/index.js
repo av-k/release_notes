@@ -12,7 +12,7 @@ class MainMenu extends React.PureComponent {
     const pathname = lodash.get(router, 'location.pathname', '/');
 
     switch (pathname) {
-      case ROUTES.HOME_PAGE:
+      case ROUTES.HOME:
         return 'home_page';
       case ROUTES.ADMIN_PANEL:
         return 'admin_panel';
@@ -36,7 +36,6 @@ class MainMenu extends React.PureComponent {
     const { style = {}, router } = this.props;
     const currentKey = this.getCurrentKeyFromRouter({ router });
 
-
     return (
       <Menu
         style={this.getStyle({ style })}
@@ -44,7 +43,7 @@ class MainMenu extends React.PureComponent {
         selectedKeys={[currentKey]}
         mode="horizontal" >
         <Menu.Item key="home_page">
-          <Link to={ROUTES.HOME_PAGE}>
+          <Link to={ROUTES.HOME}>
             <Icon type="table" />Applications
           </Link>
         </Menu.Item>

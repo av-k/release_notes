@@ -3,8 +3,8 @@ import Joi from 'joi';
 import _ from 'lodash';
 import Boom from 'boom';
 import moment from 'moment';
-
-export default function home(props = {}) {
+// FIXME - next step > to check headers.Authorization
+export default function noteCreate(props = {}) {
   const { server } = props;
 
   /**
