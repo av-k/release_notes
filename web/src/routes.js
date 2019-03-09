@@ -4,12 +4,12 @@ import { ConnectedRouter } from 'connected-react-router'
 //
 import App from 'pages/App';
 import HomePage from 'pages/HomePage/Loadable';
-import ApplicationInfoPage from 'pages/ApplicationInfoPage/Loadable';
-import ApplicationEditPage from 'pages/ApplicationEditPage/Loadable';
+import AdminPanelPage from 'pages/AdminPanelPage';
+import PublicNotesPage from 'pages/PublicNotesPage/Loadable';
+import AdminNotesPage from 'pages/AdminNotesPage/Loadable';
 import NotFoundPage from 'pages/NotFoundPage/Loadable';
 import { history } from './store';
 import { ROUTES } from './config/constants';
-import AdminPanelPage from "./pages/AdminPanelPage";
 
 export const routes = (
   <ConnectedRouter history={history}>
@@ -25,28 +25,10 @@ export const routes = (
       />
       <Route
         exact
-        path={ROUTES.APPLICATION_INFO}
+        path={ROUTES.PUBLIC_NOTES}
         render={(props) => (
           <App>
-            <ApplicationInfoPage {...props} />
-          </App>
-        )}
-      />
-      <Route
-        exact
-        path={ROUTES.APPLICATION_EDIT}
-        render={(props) => (
-          <App>
-            <ApplicationEditPage {...props} />
-          </App>
-        )}
-      />
-      <Route
-        exact
-        path={ROUTES.APPLICATION_EDIT}
-        render={(props) => (
-          <App>
-            <ApplicationPage {...props} />
+            <PublicNotesPage {...props} />
           </App>
         )}
       />
@@ -56,6 +38,15 @@ export const routes = (
         render={(props) => (
           <App>
             <AdminPanelPage {...props} />
+          </App>
+        )}
+      />
+      <Route
+        exact
+        path={ROUTES.ADMIN_NOTES}
+        render={(props) => (
+          <App>
+            <AdminNotesPage {...props} />
           </App>
         )}
       />

@@ -1,8 +1,8 @@
 'use strict';
 const defaultEnvVariables = {
   NODE_ENV: 'development',
-  HOST: 'localhost',
-  PORT: 3000,
+  HOST: '0.0.0.0',
+  PORT: 3050,
   WEB_APP_PREFIX: 'AP',
   API_HOST: '0.0.0.0',
   API_PORT: '3010',

@@ -9,11 +9,11 @@ import reducer from './reducer';
 import * as applicationActions from './actions';
 import injectReducer from '../../utils/injectReducer';
 import { Wrapper, NoDataWrapper } from './index.styled';
-import ApplicationsTable from 'components/ApplicationsTable/index';
+import PublicApplicationsTable from 'components/PublicApplicationsTable';
 
 
 @connect(mapStateToProps, mapDispatchToProps)
-class ApplicationInfoPage extends React.PureComponent {
+class PublicNotesPage extends React.PureComponent {
   applicationId = null;
   errorsIds = [];
 
@@ -52,10 +52,11 @@ class ApplicationInfoPage extends React.PureComponent {
     }
 
     return (
-      <ApplicationsTable data={applications}
-                         loading={applications.loading}
-                         pageSize={pageSize}
-                         onChange={(props) => this.appsTableOnChange({pageSize, ...props})} />
+      <PublicApplicationsTable
+        data={applications}
+        loading={applications.loading}
+        pageSize={pageSize}
+        onChange={(props) => this.appsTableOnChange({pageSize, ...props})} />
     );
   };
 
@@ -98,4 +99,4 @@ const withReducer = injectReducer({ key: 'application', reducer });
 
 export default compose(
   withReducer,
-)(ApplicationInfoPage);
+)(PublicNotesPage);

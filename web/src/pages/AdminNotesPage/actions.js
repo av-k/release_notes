@@ -57,13 +57,13 @@ export function createNote(data) {
 
       try {
         const response = await notesRequests.createNote(data);
-        resolve();
+        resolve(response);
         return dispatch({
           type: CREATE_NOTE_SUCCESS,
           payload: {...response}
         });
       } catch (error) {
-        resolve();
+        resolve({ error });
         return dispatch({
           type: CREATE_NOTE_ERROR,
           payload: {

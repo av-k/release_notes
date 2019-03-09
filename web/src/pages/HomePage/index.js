@@ -3,14 +3,16 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
+import { push } from 'connected-react-router'
 import lodash from 'lodash';
 import { toast } from 'react-toastify';
+import queryString from 'query-string';
 //
 import reducer from './reducer';
 import * as homeActions from './actions';
-import injectReducer from '../../utils/injectReducer';
+import injectReducer from 'utils/injectReducer';
 import { Wrapper, NoDataWrapper } from './index.styled';
-import ApplicationsTable from 'components/ApplicationsTable';
+import PublicApplicationsTable from 'components/PublicApplicationsTable';
 
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -22,9 +24,19 @@ class HomePage extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { loadApplications } = this.props;
-    loadApplications();
+    this.queryFilterHandler();
   }
+
+  queryFilterHandler = () => {
+    const { updateFilter, loadApplications, location } = this.props;
+    const query = queryString.parse(location.search);
+
+    if (Object.keys(query).length > 0) {
+      updateFilter(query);
+    }
+
+    loadApplications();
+  };
 
   errorsHandler = () => {
     const currentApps = lodash.get(this, 'props.home.applications', {});
@@ -40,7 +52,9 @@ class HomePage extends React.PureComponent {
   getTableContent = () => {
     const { applications } = this.props.home;
     const count = lodash.get(applications, 'meta.count', 0);
+    const query = queryString.parse(location.search);
     const pageSize = 10;
+    const currentPage = query.page ? +query.page : 0;
 
     if (!count && !applications.loading) {
       return (
@@ -51,17 +65,20 @@ class HomePage extends React.PureComponent {
     }
 
     return (
-      <ApplicationsTable data={applications}
-                         loading={applications.loading}
-                         pageSize={pageSize}
-                         onChange={(props) => this.appsTableOnChange({pageSize, ...props})} />
+      <PublicApplicationsTable
+        data={applications}
+        loading={applications.loading}
+        pageSize={pageSize}
+        defaultCurrent={currentPage + 1}
+        onChange={(props) => this.appsTableOnChange({pageSize, ...props})} />
     );
   };
 
   appsTableOnChange = (props = {}) => {
-    const { loadApplications } = this.props;
+    const { loadApplications, push } = this.props;
     const { page, pageSize } = props;
     loadApplications({ page: page - 1, limit: pageSize });
+    push(`${location.pathname}?page=${page - 1}`);
   };
 
   render() {
@@ -94,7 +111,9 @@ function mapStateToProps(state = {}) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    push: bindActionCreators(push, dispatch),
     loadApplications: bindActionCreators(homeActions.loadApplications, dispatch),
+    updateFilter: bindActionCreators(homeActions.updateFilter, dispatch)
   };
 }
 

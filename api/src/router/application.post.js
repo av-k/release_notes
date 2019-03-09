@@ -41,7 +41,7 @@ export default function applicationUpdate(props = {}) {
         },
         payload: Joi.object({
           name: Joi.string()
-            .required()
+            .optional()
         })
       }
     }

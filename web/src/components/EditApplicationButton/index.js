@@ -2,21 +2,22 @@ import React, { Component } from 'react';
 import { Button, Modal, Form, Input } from 'antd';
 
 const FormItem = Form.Item;
-const CollectionCreateForm = Form.create()(
+const CollectionEditForm = Form.create()(
   (props) => {
-    const { visible, onCancel, onCreate, form } = props;
+    const { visible, onCancel, onEdit, form, data } = props;
     const { getFieldDecorator } = form;
     return (
       <Modal
         visible={visible}
-        title="Create a new application"
-        okText="Create"
+        title="Edit a new application"
+        okText="Edit"
         onCancel={onCancel}
-        onOk={onCreate}
+        onOk={onEdit}
       >
         <Form layout="vertical">
           <FormItem label="name">
             {getFieldDecorator('name', {
+              initialValue: data.name,
               rules: [{ required: true, message: 'Please input the name of application!' }],
             })(
               <Input />
@@ -41,7 +42,7 @@ class Index extends Component {
     this.setState({ visible: false });
   };
 
-  handleCreate = () => {
+  handleEdit = () => {
     const form = this.form;
     form.validateFields((err, values) => {
       if (err) {
@@ -62,19 +63,24 @@ class Index extends Component {
   };
 
   render() {
-    const { loading } = this.props;
+    const { loading, button, data = {}, style = {} } = this.props;
+    const buttonView = button || (
+      loading
+        ? <Button type="primary" loading>Loading</Button>
+        : <Button type="primary" onClick={this.showModal}>Edit Application</Button>
+    );
 
     return (
-      <section className="new-application-section">
-        {loading
-          ? <Button type="primary" loading>Loading</Button>
-          : <Button type="primary" onClick={this.showModal}>New Application</Button>
-        }
-        <CollectionCreateForm
+      <section style={style} className="edit-application-section">
+        <span onClick={this.showModal}>
+          {buttonView}
+        </span>
+        <CollectionEditForm
           ref={this.saveFormRef}
           visible={this.state.visible}
+          data={data}
           onCancel={this.handleCancel}
-          onCreate={this.handleCreate}
+          onEdit={this.handleEdit}
         />
       </section>
     );

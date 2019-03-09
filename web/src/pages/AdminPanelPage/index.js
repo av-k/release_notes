@@ -11,10 +11,11 @@ import reducer from './reducer';
 import * as adminPanelActions from './actions';
 import injectReducer from '../../utils/injectReducer';
 import { Wrapper, CreateApplicationWrapper } from './index.styled';
-import NewApplication from 'components/NewApplication';
+import CreateApplicationButton from 'components/CreateApplicationButton';
 import { NoDataWrapper } from './index.styled';
-import ApplicationsTable from '../../components/ApplicationsTable';
+import AdminApplicationsTable from '../../components/AdminApplicationsTable';
 
+const defaultErrorMessage = 'Unexpected error, please try later.';
 
 @connect(mapStateToProps, mapDispatchToProps)
 class AdminPanelPage extends React.PureComponent {
@@ -25,21 +26,25 @@ class AdminPanelPage extends React.PureComponent {
   }
 
   componentDidMount() {
+    this.queryFilterHandler();
+  }
+
+  queryFilterHandler = () => {
     const { updateFilter, loadApplications, location } = this.props;
     const query = queryString.parse(location.search);
 
-    if (query) {
+    if (Object.keys(query).length > 0) {
       updateFilter(query);
     }
 
     loadApplications();
-  }
+  };
 
   errorsHandler = () => {
     const adminPanel = lodash.get(this, 'props.adminPanel', {});
 
     if (adminPanel.error && !this.errorsIds.includes(adminPanel.error.id)) {
-      const message = lodash.get(adminPanel, 'error.message', 'Unexpected error, please try later.');
+      const message = lodash.get(adminPanel, 'error.message', defaultErrorMessage);
       this.errorsIds.push(adminPanel.error.id);
       toast.error(message, {
         position: toast.POSITION.TOP_RIGHT
@@ -63,13 +68,14 @@ class AdminPanelPage extends React.PureComponent {
     }
 
     return (
-      <ApplicationsTable data={applications}
-                         loading={applications.loading}
-                         pageSize={pageSize}
-                         defaultCurrent={currentPage + 1}
-                         onEdit={this.appsTableOnEdit}
-                         onDelete={this.appsTableOnDelete}
-                         onChange={(props) => this.appsTableOnChange({pageSize, ...props})} />
+      <AdminApplicationsTable
+        data={applications}
+        loading={applications.loading}
+        pageSize={pageSize}
+        defaultCurrent={currentPage + 1}
+        onEdit={this.editApplicationHandler}
+        onDelete={this.deleteApplicationHandler}
+        onChange={(props) => this.appsTableOnChange({pageSize, ...props})} />
     );
   };
 
@@ -80,20 +86,47 @@ class AdminPanelPage extends React.PureComponent {
     push(`${location.pathname}?page=${page - 1}`);
   };
 
-  appsTableOnEdit = (props = {}) => {
-    console.info('EDIT: ', props);
-  };
-
-  appsTableOnDelete = (props = {}) => {
-    console.info('DELETE: ', props);
-  };
-
   createApplicationHandler = (values) => {
     const { adminPanel, loadApplications, createApplication } = this.props;
 
-    createApplication(values).then(() => {
-      const filter = lodash.get(adminPanel, 'applications.filter', {});
-      loadApplications(filter);
+    createApplication(values).then((response = {}) => {
+      if (!response.error) {
+        const filter = lodash.get(adminPanel, 'applications.filter', {});
+        loadApplications(filter);
+        toast.info(`Application "${response.name}" was created.`, {
+          position: toast.POSITION.TOP_RIGHT
+        });
+      }
+    });
+  };
+
+  editApplicationHandler = (props = {}) => {
+    const { id, name } = props;
+    const { adminPanel, loadApplications, editApplication } = this.props;
+
+    editApplication(id, { name }).then((response = {}) => {
+      if (!response.error) {
+        const filter = lodash.get(adminPanel, 'applications.filter', {});
+        loadApplications(filter);
+        toast.info(`Application "${response.name}" was edited.`, {
+          position: toast.POSITION.TOP_RIGHT
+        });
+      }
+    });
+  };
+
+  deleteApplicationHandler = (props = {}) => {
+    const { id, name } = props;
+    const { adminPanel, loadApplications, deleteApplication } = this.props;
+
+    deleteApplication(id).then((response = {}) => {
+      if (!response.error) {
+        const filter = lodash.get(adminPanel, 'applications.filter', {});
+        loadApplications(filter);
+        toast.info(`Application "${name}" was deleted.`, {
+          position: toast.POSITION.TOP_RIGHT
+        });
+      }
     });
   };
 
@@ -112,7 +145,7 @@ class AdminPanelPage extends React.PureComponent {
         </Helmet>
         <Wrapper>
           <CreateApplicationWrapper>
-            <NewApplication onSubmit={this.createApplicationHandler} loading={createApplicationLoading} />
+            <CreateApplicationButton onSubmit={this.createApplicationHandler} loading={createApplicationLoading} />
           </CreateApplicationWrapper>
           {this.getTableContent()}
         </Wrapper>
@@ -130,6 +163,8 @@ function mapDispatchToProps (dispatch) {
   return {
     push: bindActionCreators(push, dispatch),
     createApplication: bindActionCreators(adminPanelActions.createApplication, dispatch),
+    editApplication: bindActionCreators(adminPanelActions.editApplication, dispatch),
+    deleteApplication: bindActionCreators(adminPanelActions.deleteApplication, dispatch),
     loadApplications: bindActionCreators(adminPanelActions.loadApplications, dispatch),
     updateFilter: bindActionCreators(adminPanelActions.updateFilter, dispatch)
   };

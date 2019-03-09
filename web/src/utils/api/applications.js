@@ -15,12 +15,12 @@ export function createApplication(data) {
   return axios.put('/application/create', data);
 }
 
-export function updateApplication(id, options) {
+export function editApplication(id, options) {
   const axios = getAxios();
   return axios.post(`/application/${id}`, options);
 }
 
 export function deleteApplication(id) {
   const axios = getAxios();
-  return axios.post(`/application/${id}`);
+  return axios.delete(`/application/${id}`);
 }

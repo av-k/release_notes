@@ -4,21 +4,30 @@ import uuid from 'uuid';
 import {
   LOAD_APPLICATIONS_LIST,
   LOAD_APPLICATIONS_SUCCESS,
-  LOAD_APPLICATIONS_ERROR
+  LOAD_APPLICATIONS_ERROR,
+  LOAD_APPLICATIONS_UPDATE_FILTERS
 } from './constants';
 import * as applicationsRequests from 'utils/api/applications'
 
-export function loadApplications(options) {
-  return async (dispatch) => {
+/**
+ *
+ * @param options
+ * @returns {Function}
+ */
+export function loadApplications(filter) {
+  return async (dispatch, getState) => {
+    const { home } = getState();
+    const storeFilter = lodash.get(home, 'applications.filter', {});
+
     dispatch({
       type: LOAD_APPLICATIONS_LIST
     });
 
     try {
-      const response = await applicationsRequests.loadApplications(options);
+      const response = await applicationsRequests.loadApplications(filter || storeFilter);
       return dispatch({
         type: LOAD_APPLICATIONS_SUCCESS,
-        payload: { ...response }
+        payload: { filter: filter || storeFilter, ...response }
       });
     } catch(error) {
       return dispatch({
@@ -32,4 +41,20 @@ export function loadApplications(options) {
       });
     }
   };
+}
+
+/**
+ *
+ * @param filter
+ * @returns {Function}
+ */
+export function updateFilter(filter) {
+  return async (dispatch) => {
+    dispatch({
+      type: LOAD_APPLICATIONS_UPDATE_FILTERS,
+      payload: {
+        filter
+      }
+    });
+  }
 }

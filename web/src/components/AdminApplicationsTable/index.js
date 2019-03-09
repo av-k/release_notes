@@ -1,15 +1,16 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Pagination, Icon, Popconfirm, message } from 'antd';
+import { Table, Pagination, Icon, Popconfirm } from 'antd';
 import lodash from 'lodash';
 import moment from 'moment';
 import uuid from 'uuid';
 //
 import { ROUTES } from 'config/constants';
+import EditApplicationButton from 'components/EditApplicationButton';
 
 const DATA_FORMAT = 'YYYY-MM-DD HH:mm';
 
-class ApplicationTable extends React.PureComponent {
+class AdminApplicationsTable extends React.PureComponent {
   getColumns = () => {
     const columns = [
       {
@@ -36,31 +37,40 @@ class ApplicationTable extends React.PureComponent {
       {
         title: 'Action',
         key: 'action',
-        render: (text, data) => (
-          <Fragment>
-            <Link to={ROUTES.ADMIN_NOTES.replace(':id', data.id)}>
-              <Icon type="select" />
-              <span>&nbsp;Notes</span>
-            </Link>
-            <a href="javascript:void(0);" onClick={e => this.props.onEdit({data})}>
+        render: (text, data) => {
+          const editButtonView = (
+            <a href="javascript:void(0);">
               &nbsp;
               &nbsp;
               <Icon type="edit" />
               <span>&nbsp;Edit</span>
             </a>
-            <Popconfirm title="Are you sure delete this note?"
-                        onConfirm={e => this.props.onDelete(data)}
-                        okText="Yes"
-                        cancelText="No">
-              <a href="javascript:void(0);">
-                &nbsp;
-                &nbsp;
-                <Icon type="delete" />
-                <span>&nbsp;Delete</span>
-              </a>
-            </Popconfirm>
-          </Fragment>
-        )
+          );
+
+          return (
+            <Fragment>
+              <Link to={ROUTES.ADMIN_NOTES.replace(':applicationId', data.id)}>
+                <Icon type="select" />
+                <span>&nbsp;Notes</span>
+              </Link>
+              <EditApplicationButton button={editButtonView}
+                                     style={{display: 'inline-block'}}
+                                     data={data}
+                                     onSubmit={event => this.props.onEdit({...data, ...event})} />
+              <Popconfirm title="Are you sure delete this application?"
+                          onConfirm={e => this.props.onDelete(data)}
+                          okText="Yes"
+                          cancelText="No">
+                <a href="javascript:void(0);">
+                  &nbsp;
+                  &nbsp;
+                  <Icon type="delete" />
+                  <span>&nbsp;Delete</span>
+                </a>
+              </Popconfirm>
+            </Fragment>
+          );
+        }
       }
     ];
 
@@ -99,4 +109,4 @@ class ApplicationTable extends React.PureComponent {
   }
 }
 
-export default ApplicationTable;
+export default AdminApplicationsTable;

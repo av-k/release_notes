@@ -2,13 +2,18 @@ import {
   LOAD_NOTES_LIST,
   LOAD_NOTES_LIST_SUCCESS,
   LOAD_NOTES_LIST_ERROR,
-  LOAD_NOTES_UPDATE_FILTERS
+  LOAD_NOTES_UPDATE_FILTERS,
+  CREATE_NOTE,
+  CREATE_NOTE_SUCCESS,
+  CREATE_NOTE_ERROR
 } from './constants';
 import { updateState } from 'utils/reducer';
-import {LOAD_APPLICATIONS_UPDATE_FILTERS} from "../AdminPanelPage/constants";
 
 const initialState = {
   error: null,
+  createNote: {
+    loading: false
+  },
   notes: {
     loading: false,
     filter: {}
@@ -44,11 +49,35 @@ function reducer(state = initialState, action = {}) {
         ...payload
       });
 
-    case LOAD_APPLICATIONS_UPDATE_FILTERS:
+    case LOAD_NOTES_UPDATE_FILTERS:
       return updateState(state, {
         notes: {
           ...payload
         }
+      });
+
+    case CREATE_NOTE:
+      return updateState(state, {
+        error: null,
+        createNote: {
+          loading: true
+        }
+      });
+
+    case CREATE_NOTE_SUCCESS:
+      return updateState(state, {
+        error: null,
+        createNote: {
+          loading: false
+        }
+      });
+
+    case CREATE_NOTE_ERROR:
+      return updateState(state, {
+        createNote: {
+          loading: false,
+        },
+        ...payload
       });
 
     default:

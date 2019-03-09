@@ -9,14 +9,14 @@ import { push } from 'connected-react-router';
 //
 import reducer from './reducer';
 import * as noteActions from './actions';
-import injectReducer from '../../utils/injectReducer';
+import injectReducer from 'utils/injectReducer';
 import { Wrapper, NoDataWrapper, CreateNoteWrapper } from './index.styled';
-import NotesTable from 'components/NotesTable/index';
-import NewNote from '../../components/NewNote';
+import NotesTable from 'components/NotesTable';
+import NewNote from 'components/NewNote';
 
 
 @connect(mapStateToProps, mapDispatchToProps)
-class ApplicationEditPage extends React.PureComponent {
+class AdminNotesPage extends React.PureComponent {
   applicationId = null;
   errorsIds = [];
 
@@ -25,11 +25,11 @@ class ApplicationEditPage extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.applicationId = lodash.get(this, 'props.match.params.id', null);
+    this.applicationId = lodash.get(this, 'props.match.params.applicationId', null);
     const { loadNotes, updateFilter, location } = this.props;
     const query = queryString.parse(location.search);
 
-    if (query) {
+    if (Object.keys(query).length > 0) {
       updateFilter(query);
     }
 
@@ -78,7 +78,6 @@ class ApplicationEditPage extends React.PureComponent {
 
   createNoteHandler = (values) => {
     const { application, loadNotes, createNote } = this.props;
-
     createNote(values).then(() => {
       const filter = lodash.get(application, 'notes.filter', {});
       loadNotes(filter);
@@ -86,8 +85,8 @@ class ApplicationEditPage extends React.PureComponent {
   };
 
   render() {
-    const { application } = this.props;
-    const createNoteLoading = lodash.get(application, 'createNoteLoading.loading', false);
+    const { notesEdit } = this.props;
+    const createNoteLoading = lodash.get(notesEdit, 'createNoteLoading.loading', false);
 
     return (
       <article>
@@ -110,8 +109,8 @@ class ApplicationEditPage extends React.PureComponent {
 }
 
 function mapStateToProps(state = {}) {
-  const { application } = state;
-  return { application };
+  const { notesEdit } = state;
+  return { notesEdit };
 }
 
 function mapDispatchToProps (dispatch) {
@@ -123,8 +122,8 @@ function mapDispatchToProps (dispatch) {
   };
 }
 
-const withReducer = injectReducer({ key: 'application', reducer });
+const withReducer = injectReducer({ key: 'notesEdit', reducer });
 
 export default compose(
   withReducer,
-)(ApplicationEditPage);
+)(AdminNotesPage);

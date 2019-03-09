@@ -9,7 +9,7 @@ import { ROUTES } from 'config/constants';
 
 const DATA_FORMAT = 'YYYY-MM-DD HH:mm';
 
-class ApplicationTable extends React.PureComponent {
+class PublicApplicationsTable extends React.PureComponent {
   getColumns = () => {
     const columns = [
       {
@@ -23,7 +23,7 @@ class ApplicationTable extends React.PureComponent {
         key: 'name',
         render: (text, data) => {
           return (
-            <Link to={ROUTES.APPLICATION_INFO.replace(':id', data.id)}>{text}</Link>
+            <Link to={ROUTES.PUBLIC_NOTES.replace(':applicationId', data.id)}>{text}</Link>
           );
         }
       },
@@ -37,24 +37,10 @@ class ApplicationTable extends React.PureComponent {
         title: 'Action',
         key: 'action',
         render: (text, data) => (
-          <Fragment>
-            <Link to={ROUTES.APPLICATION_EDIT.replace(':id', data.id)}>
-              <Icon type="select" />
-              <span>&nbsp;Notes</span>
-            </Link>
-            <a href="javascript:void(0);" onClick={event => this.props.onEdit({data})}>
-              &nbsp;
-              &nbsp;
-              <Icon type="edit" />
-              <span>&nbsp;Edit</span>
-            </a>
-            <a href="javascript:void(0);" onClick={event => this.props.onDelete({data})}>
-              &nbsp;
-              &nbsp;
-              <Icon type="delete" />
-              <span>&nbsp;Delete</span>
-            </a>
-          </Fragment>
+          <Link to={ROUTES.PUBLIC_NOTES.replace(':applicationId', data.id)}>
+            <Icon type="select" />
+            <span>&nbsp;Notes</span>
+          </Link>
         )
       }
     ];
@@ -94,4 +80,4 @@ class ApplicationTable extends React.PureComponent {
   }
 }
 
-export default ApplicationTable;
+export default PublicApplicationsTable;
