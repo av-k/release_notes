@@ -1,15 +1,14 @@
 import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
-import { Table, Pagination, Icon } from 'antd';
+import { Table, Pagination, Tooltip } from 'antd';
 import lodash from 'lodash';
 import moment from 'moment';
 import uuid from 'uuid';
 //
-import { ROUTES } from 'config/constants';
+import { ColDescriptionWrapper } from './index.styled';
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm';
 
-class PublicApplicationsTable extends React.PureComponent {
+class PublicNotesTable extends React.PureComponent {
   getColumns = () => {
     const columns = [
       {
@@ -18,40 +17,36 @@ class PublicApplicationsTable extends React.PureComponent {
         key: 'id'
       },
       {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        render: (text, data) => {
-          return (
-            <Link to={`${ROUTES.PUBLIC_NOTES}?applicationId=${data.id}`}>
-              {text}
-            </Link>
-          );
-        }
+        title: 'ApplicationID',
+        dataIndex: 'applicationId',
+        key: 'applicationId'
       },
       {
-        title: 'Created',
-        dataIndex: 'createdAt',
-        key: 'created',
-        render: (text) => moment(text).format(DATE_FORMAT)
+        title: 'Version',
+        dataIndex: 'version',
+        key: 'version'
       },
       {
-        title: 'Action',
-        key: 'action',
+        title: 'Description',
+        dataIndex: 'description',
+        key: 'description',
         render: (text, data) => (
-          <Link to={`${ROUTES.PUBLIC_NOTES}?applicationId=${data.id}`}>
-            <Icon type="select" />
-            <span>&nbsp;Notes</span>
-          </Link>
+          <Tooltip title={text} placement='bottom'>
+            <ColDescriptionWrapper>
+              {text}
+            </ColDescriptionWrapper>
+          </Tooltip>
         )
+      },
+      {
+        title: 'Release Date',
+        dataIndex: 'releaseDate',
+        key: 'releaseDate',
+        render: (text) => moment(text).format(DATE_FORMAT)
       }
     ];
 
     return columns;
-  };
-
-  onChange = (page) => {
-    this.props.onChange({ page });
   };
 
   render() {
@@ -79,4 +74,4 @@ class PublicApplicationsTable extends React.PureComponent {
   }
 }
 
-export default PublicApplicationsTable;
+export default PublicNotesTable;

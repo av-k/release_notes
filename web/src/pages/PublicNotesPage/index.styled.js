@@ -13,6 +13,7 @@ const NoDataWrapper = styled.div`
   text-align: center;
 `;
 
+
 export {
   Wrapper,
   NoDataWrapper

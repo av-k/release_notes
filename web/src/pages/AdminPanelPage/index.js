@@ -55,7 +55,7 @@ class AdminPanelPage extends React.PureComponent {
   getTableContent = () => {
     const { applications } = this.props.adminPanel;
     const count = lodash.get(applications, 'meta.count', 0);
-    const query = queryString.parse(location.search);
+    const query = queryString.parse(this.props.location.search);
     const pageSize = 10;
     const currentPage = query.page ? +query.page : 0;
 
@@ -75,11 +75,11 @@ class AdminPanelPage extends React.PureComponent {
         defaultCurrent={currentPage + 1}
         onEdit={this.editApplicationHandler}
         onDelete={this.deleteApplicationHandler}
-        onChange={(props) => this.appsTableOnChange({pageSize, ...props})} />
+        onChange={(props) => this.tableOnChange({pageSize, ...props})} />
     );
   };
 
-  appsTableOnChange = (props = {}) => {
+  tableOnChange = (props = {}) => {
     const { loadApplications, location, push } = this.props;
     const { page, pageSize } = props;
     loadApplications({ page: page - 1, limit: pageSize });

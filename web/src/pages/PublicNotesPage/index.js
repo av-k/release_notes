@@ -2,15 +2,21 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
+import { push } from 'connected-react-router'
 import lodash from 'lodash';
+import { Icon } from 'antd';
 import { toast } from 'react-toastify';
+import queryString from 'query-string';
 //
 import reducer from './reducer';
-import * as applicationActions from './actions';
+import * as publicNotesActions from './actions';
 import injectReducer from '../../utils/injectReducer';
-import { Wrapper, NoDataWrapper } from './index.styled';
-import PublicApplicationsTable from 'components/PublicApplicationsTable';
+import { Wrapper } from './index.styled';
+import { NoDataWrapper } from './index.styled';
+import PublicNotesTable from 'components/PublicNotesTable';
 
+
+const defaultErrorMessage = 'Unexpected error, please try later.';
 
 @connect(mapStateToProps, mapDispatchToProps)
 class PublicNotesPage extends React.PureComponent {
@@ -22,28 +28,41 @@ class PublicNotesPage extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.applicationId = lodash.get(this, 'props.match.params.id', null);
-    const { loadApplication } = this.props;
-    loadApplication(this.applicationId);
+    const queryParams = this.getFilterParamsFromQuery();
+    this.applicationId = queryParams.applicationId;
+    this.props.loadApplication(this.applicationId);
+    this.props.loadNotes(queryParams);
   }
 
-  errorsHandler = () => {
-    const currentApps = lodash.get(this, 'props.application.applications', {});
+  componentWillUnmount() {
+    this.props.clearNotes();
+  }
 
-    if (currentApps.error && !this.errorsIds.includes(currentApps.error.id)) {
-      this.errorsIds.push(currentApps.error.id);
-      toast.error(currentApps.error.message, {
+  getFilterParamsFromQuery = () => {
+    const { location } = this.props;
+    return queryString.parse(location.search);
+  };
+
+  errorsHandler = () => {
+    const publicNotes = lodash.get(this, 'props.publicNotes', {});
+
+    if (publicNotes.error && !this.errorsIds.includes(publicNotes.error.id)) {
+      const message = lodash.get(publicNotes, 'error.message', defaultErrorMessage);
+      this.errorsIds.push(publicNotes.error.id);
+      toast.error(message, {
         position: toast.POSITION.TOP_RIGHT
       });
     }
   };
 
-  getContent = () => {
-    const { applications } = this.props.application;
-    const count = lodash.get(applications, 'meta.count', 0);
+  getTableContent = () => {
+    const { notes } = this.props.publicNotes;
+    const count = lodash.get(notes, 'meta.count', 0);
+    const query = queryString.parse(this.props.location.search);
     const pageSize = 10;
+    const currentPage = query.page ? +query.page : 0;
 
-    if (!count && !applications.loading) {
+    if (!count && !notes.loading) {
       return (
         <NoDataWrapper>
           <h2>No data</h2>
@@ -52,32 +71,50 @@ class PublicNotesPage extends React.PureComponent {
     }
 
     return (
-      <PublicApplicationsTable
-        data={applications}
-        loading={applications.loading}
+      <PublicNotesTable
+        data={notes}
+        loading={notes.loading}
         pageSize={pageSize}
-        onChange={(props) => this.appsTableOnChange({pageSize, ...props})} />
+        defaultCurrent={currentPage + 1}
+        onChangePublish={this.tableOnChange}/>
     );
   };
 
-  appsTableOnChange = (props = {}) => {
-    const { loadApplications } = this.props;
+  tableOnChange = (props = {}) => {
+    const { loadNotes, location, push } = this.props;
     const { page, pageSize } = props;
-    loadApplications({ page: page - 1, limit: pageSize });
+    const queryParams = this.getFilterParamsFromQuery();
+    const filterProps = {
+      ...queryParams,
+      page: page - 1, limit: pageSize
+    };
+    const newQuery = queryString.stringify(filterProps);
+    loadNotes(filterProps);
+    push(`${location.pathname}?${newQuery}`);
   };
 
   render() {
+    const { publicNotes } = this.props;
+    const { application } = publicNotes;
+    const loadApplicationLoading = lodash.get(publicNotes, 'application.loading', false);
+
     return (
       <article>
         <Helmet>
-          <title>Application</title>
+          <title>Administration Panel</title>
           <meta
             name="description"
-            content="Application Release Notes"
+            content="Administration Panel"
           />
         </Helmet>
         <Wrapper>
-          {/*{this.getContent()}*/}
+          <h1>
+            {loadApplicationLoading
+              ? <Icon type="loading"/>
+              : `Application: ${application.data.name} | ID: ${application.data.id}`
+            }
+          </h1>
+          {this.getTableContent()}
         </Wrapper>
       </article>
     );
@@ -85,17 +122,20 @@ class PublicNotesPage extends React.PureComponent {
 }
 
 function mapStateToProps(state = {}) {
-  const { application } = state;
-  return { application };
+  const { publicNotes } = state;
+  return { publicNotes };
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    loadApplication: bindActionCreators(applicationActions.loadApplication, dispatch),
+    push: bindActionCreators(push, dispatch),
+    loadNotes: bindActionCreators(publicNotesActions.loadNotes, dispatch),
+    clearNotes: bindActionCreators(publicNotesActions.clearNotes, dispatch),
+    loadApplication: bindActionCreators(publicNotesActions.loadApplication, dispatch)
   };
 }
 
-const withReducer = injectReducer({ key: 'application', reducer });
+const withReducer = injectReducer({ key: 'publicNotes', reducer });
 
 export default compose(
   withReducer,

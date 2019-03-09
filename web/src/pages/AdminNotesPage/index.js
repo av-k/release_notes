@@ -59,7 +59,7 @@ class AdminNotesPage extends React.PureComponent {
   getTableContent = () => {
     const { notes } = this.props.adminNotes;
     const count = lodash.get(notes, 'meta.count', 0);
-    const query = queryString.parse(location.search);
+    const query = queryString.parse(this.props.location.search);
     const pageSize = 10;
     const currentPage = query.page ? +query.page : 0;
 
@@ -80,11 +80,11 @@ class AdminNotesPage extends React.PureComponent {
         onChangePublish={this.onChangePublish}
         onEdit={this.editNoteHandler}
         onDelete={this.deleteNoteHandler}
-        onChange={(props) => this.appsTableOnChange({pageSize, ...props})} />
+        onChange={(props) => this.tableOnChange({pageSize, ...props})} />
     );
   };
 
-  appsTableOnChange = (props = {}) => {
+  tableOnChange = (props = {}) => {
     const { loadNotes, location, push } = this.props;
     const { page, pageSize } = props;
     const queryParams = this.getFilterParamsFromQuery();
@@ -174,13 +174,13 @@ class AdminNotesPage extends React.PureComponent {
           />
         </Helmet>
         <Wrapper>
+          <h1>
+            {loadApplicationLoading
+              ? <Icon type="loading"/>
+              : `Application: ${application.data.name} | ID: ${application.data.id}`
+            }
+          </h1>
           <CreateNoteWrapper>
-            <h1>
-              {loadApplicationLoading
-                ? <Icon type="loading"/>
-                : `Application: ${application.data.name} | ID: ${application.data.id}`
-              }
-            </h1>
             <CreateNoteButton onSubmit={this.createNoteHandler} loading={createApplicationLoading} />
           </CreateNoteWrapper>
           {this.getTableContent()}
