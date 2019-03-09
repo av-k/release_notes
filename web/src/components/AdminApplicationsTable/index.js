@@ -29,7 +29,9 @@ class AdminApplicationsTable extends React.PureComponent {
         key: 'name',
         render: (text, data) => {
           return (
-            <Link to={ROUTES.ADMIN_NOTES.replace(':applicationId', data.id)}>{text}</Link>
+            <Link to={`${ROUTES.ADMIN_NOTES}?applicationId=${data.id}`}>
+              {text}
+            </Link>
           );
         }
       },
@@ -45,7 +47,13 @@ class AdminApplicationsTable extends React.PureComponent {
         render: (text, data) => {
           return (
             <Fragment>
+              <Link to={`${ROUTES.ADMIN_NOTES}?applicationId=${data.id}`}>
+                <Icon type="select" />
+                <span>&nbsp;Notes</span>
+              </Link>
               <a href="javascript:void(0);" onClick={el => this.onEdit(data)}>
+                &nbsp;
+                &nbsp;
                 <Icon type="edit" />
                 <span>&nbsp;Edit</span>
               </a>

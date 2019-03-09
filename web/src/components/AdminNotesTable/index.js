@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react';
-import { Table, Pagination, Icon, Popconfirm, Switch } from 'antd';
+import { Table, Pagination, Icon, Popconfirm, Switch, Tooltip } from 'antd';
 import lodash from 'lodash';
 import moment from 'moment';
 import uuid from 'uuid';
 //
 import EditNoteModal from 'components/EditNoteModal';
+import { ColDescriptionWrapper } from './index.styled';
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm';
 
@@ -36,7 +37,11 @@ class AdminNotesTable extends React.PureComponent {
         dataIndex: 'description',
         key: 'description',
         render: (text, data) => (
-          <span>{text}</span>
+          <Tooltip title={text} placement='bottom'>
+            <ColDescriptionWrapper>
+              {text}
+            </ColDescriptionWrapper>
+          </Tooltip>
         )
       },
       {

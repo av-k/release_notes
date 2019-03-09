@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import { push } from 'connected-react-router'
 import lodash from 'lodash';
+import { Icon } from 'antd';
 import { toast } from 'react-toastify';
 import queryString from 'query-string';
 //
@@ -28,19 +29,19 @@ class AdminNotesPage extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.applicationId = lodash.get(this, 'props.match.params.applicationId', null);
-    this.queryFilterHandler();
+    const queryParams = this.getFilterParamsFromQuery();
+    this.applicationId = queryParams.applicationId;
+    this.props.loadApplication(this.applicationId);
+    this.props.loadNotes(queryParams);
   }
 
-  queryFilterHandler = () => {
-    const { updateFilter, loadNotes, location } = this.props;
-    const query = queryString.parse(location.search);
+  componentWillUnmount() {
+    this.props.clearNotes();
+  }
 
-    if (Object.keys(query).length > 0) {
-      updateFilter(query);
-    }
-
-    loadNotes();
+  getFilterParamsFromQuery = () => {
+    const { location } = this.props;
+    return queryString.parse(location.search);
   };
 
   errorsHandler = () => {
@@ -86,8 +87,14 @@ class AdminNotesPage extends React.PureComponent {
   appsTableOnChange = (props = {}) => {
     const { loadNotes, location, push } = this.props;
     const { page, pageSize } = props;
-    loadNotes({ page: page - 1, limit: pageSize });
-    push(`${location.pathname}?page=${page - 1}`);
+    const queryParams = this.getFilterParamsFromQuery();
+    const filterProps = {
+      ...queryParams,
+      page: page - 1, limit: pageSize
+    };
+    const newQuery = queryString.stringify(filterProps);
+    loadNotes(filterProps);
+    push(`${location.pathname}?${newQuery}`);
   };
 
   onChangePublish = (props = {}) => {
@@ -96,7 +103,7 @@ class AdminNotesPage extends React.PureComponent {
   };
 
   createNoteHandler = (props = {}) => {
-    const { adminNotes, loadNotes, createNote } = this.props;
+    const { loadNotes, createNote } = this.props;
     const payload = {
       ...props,
       applicationId: this.applicationId,
@@ -106,8 +113,8 @@ class AdminNotesPage extends React.PureComponent {
 
     createNote(payload).then((response = {}) => {
       if (!response.error) {
-        const filter = lodash.get(adminNotes, 'notes.filter', {});
-        loadNotes(filter);
+        const queryParams = this.getFilterParamsFromQuery();
+        loadNotes(queryParams);
         toast.info(`Note was created.`, {
           position: toast.POSITION.TOP_RIGHT
         });
@@ -117,7 +124,7 @@ class AdminNotesPage extends React.PureComponent {
 
   editNoteHandler = (props = {}) => {
     const { id, version, description } = props;
-    const { adminNotes, loadNotes, editNote } = this.props;
+    const { loadNotes, editNote } = this.props;
     const payload = {
       version,
       description,
@@ -127,8 +134,8 @@ class AdminNotesPage extends React.PureComponent {
 
     editNote(id, payload).then((response = {}) => {
       if (!response.error) {
-        const filter = lodash.get(adminNotes, 'notes.filter', {});
-        loadNotes(filter);
+        const queryParams = this.getFilterParamsFromQuery();
+        loadNotes(queryParams);
         toast.info(`Note with ID "${id}" was edited.`, {
           position: toast.POSITION.TOP_RIGHT
         });
@@ -138,12 +145,12 @@ class AdminNotesPage extends React.PureComponent {
 
   deleteNoteHandler = (props = {}) => {
     const { id } = props;
-    const { adminNotes, loadNotes, deleteNote } = this.props;
+    const { loadNotes, deleteNote } = this.props;
 
     deleteNote(id).then((response = {}) => {
       if (!response.error) {
-        const filter = lodash.get(adminNotes, 'notes.filter', {});
-        loadNotes(filter);
+        const queryParams = this.getFilterParamsFromQuery();
+        loadNotes(queryParams);
         toast.info(`Note with ID "${id}" was deleted.`, {
           position: toast.POSITION.TOP_RIGHT
         });
@@ -153,7 +160,9 @@ class AdminNotesPage extends React.PureComponent {
 
   render() {
     const { adminNotes } = this.props;
+    const { application } = adminNotes;
     const createApplicationLoading = lodash.get(adminNotes, 'createNote.loading', false);
+    const loadApplicationLoading = lodash.get(adminNotes, 'application.loading', false);
 
     return (
       <article>
@@ -166,6 +175,12 @@ class AdminNotesPage extends React.PureComponent {
         </Helmet>
         <Wrapper>
           <CreateNoteWrapper>
+            <h1>
+              {loadApplicationLoading
+                ? <Icon type="loading"/>
+                : `Application: ${application.data.name} | ID: ${application.data.id}`
+              }
+            </h1>
             <CreateNoteButton onSubmit={this.createNoteHandler} loading={createApplicationLoading} />
           </CreateNoteWrapper>
           {this.getTableContent()}
@@ -187,7 +202,8 @@ function mapDispatchToProps (dispatch) {
     editNote: bindActionCreators(adminNotesActions.editNote, dispatch),
     deleteNote: bindActionCreators(adminNotesActions.deleteNote, dispatch),
     loadNotes: bindActionCreators(adminNotesActions.loadNotes, dispatch),
-    updateFilter: bindActionCreators(adminNotesActions.updateFilter, dispatch)
+    clearNotes: bindActionCreators(adminNotesActions.clearNotes, dispatch),
+    loadApplication: bindActionCreators(adminNotesActions.loadApplication, dispatch)
   };
 }
 

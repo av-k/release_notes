@@ -1,8 +1,7 @@
 import {
   LOAD_APPLICATIONS_LIST,
   LOAD_APPLICATIONS_SUCCESS,
-  LOAD_APPLICATIONS_ERROR,
-  LOAD_APPLICATIONS_UPDATE_FILTERS
+  LOAD_APPLICATIONS_ERROR
 } from './constants';
 import { updateState } from 'utils/reducer';
 
@@ -43,13 +42,6 @@ function reducer(state = initialState, action = {}) {
           loading: false,
           meta: {},
           results: [],
-          ...payload
-        }
-      });
-
-    case LOAD_APPLICATIONS_UPDATE_FILTERS:
-      return updateState(state, {
-        applications: {
           ...payload
         }
       });

@@ -24,18 +24,13 @@ class HomePage extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.queryFilterHandler();
+    const queryParams = this.getFilterParamsFromQuery();
+    this.props.loadApplications(queryParams);
   }
 
-  queryFilterHandler = () => {
-    const { updateFilter, loadApplications, location } = this.props;
-    const query = queryString.parse(location.search);
-
-    if (Object.keys(query).length > 0) {
-      updateFilter(query);
-    }
-
-    loadApplications();
+  getFilterParamsFromQuery = () => {
+    const { location } = this.props;
+    return queryString.parse(location.search);
   };
 
   errorsHandler = () => {
@@ -75,10 +70,16 @@ class HomePage extends React.PureComponent {
   };
 
   appsTableOnChange = (props = {}) => {
-    const { loadApplications, push } = this.props;
+    const { loadApplications, location, push } = this.props;
     const { page, pageSize } = props;
-    loadApplications({ page: page - 1, limit: pageSize });
-    push(`${location.pathname}?page=${page - 1}`);
+    const queryParams = this.getFilterParamsFromQuery();
+    const filterProps = {
+      ...queryParams,
+      page: page - 1, limit: pageSize
+    };
+    const newQuery = queryString.stringify(filterProps);
+    loadApplications(filterProps);
+    push(`${location.pathname}?${newQuery}`);
   };
 
   render() {
@@ -112,8 +113,7 @@ function mapStateToProps(state = {}) {
 function mapDispatchToProps (dispatch) {
   return {
     push: bindActionCreators(push, dispatch),
-    loadApplications: bindActionCreators(homeActions.loadApplications, dispatch),
-    updateFilter: bindActionCreators(homeActions.updateFilter, dispatch)
+    loadApplications: bindActionCreators(homeActions.loadApplications, dispatch)
   };
 }
 

@@ -2,7 +2,10 @@ import {
   LOAD_NOTES_LIST,
   LOAD_NOTES_LIST_SUCCESS,
   LOAD_NOTES_LIST_ERROR,
-  LOAD_NOTES_UPDATE_FILTERS,
+  LOAD_APPLICATION,
+  LOAD_APPLICATION_SUCCESS,
+  LOAD_APPLICATION_ERROR,
+  CLEAR_NOTES_LIST,
   CREATE_NOTE,
   CREATE_NOTE_SUCCESS,
   CREATE_NOTE_ERROR,
@@ -31,6 +34,10 @@ const initialState = {
     loading: false,
     meta: {},
     results: []
+  },
+  application: {
+    loading: false,
+    data: {}
   }
 };
 
@@ -66,10 +73,12 @@ function reducer(state = initialState, action = {}) {
         }
       });
 
-    case LOAD_NOTES_UPDATE_FILTERS:
+    case CLEAR_NOTES_LIST:
       return updateState(state, {
         notes: {
-          ...payload
+          loading: false,
+          meta: {},
+          results: [],
         }
       });
 
@@ -140,6 +149,29 @@ function reducer(state = initialState, action = {}) {
     case DELETE_NOTE_ERROR:
       return updateState(state, {
         deleteNote: {
+          loading: false
+        },
+        ...payload
+      });
+
+    case LOAD_APPLICATION:
+      return updateState(state, {
+        application: {
+          loading: true
+        }
+      });
+
+    case LOAD_APPLICATION_SUCCESS:
+      return updateState(state, {
+        application: {
+          loading: false,
+          data: payload
+        }
+      });
+
+    case LOAD_APPLICATION_ERROR:
+      return updateState(state, {
+        application: {
           loading: false
         },
         ...payload

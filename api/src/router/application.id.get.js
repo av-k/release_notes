@@ -8,16 +8,16 @@ export default function application(props = {}) {
   async function handler(request, h) {
     const models = _.get(server, 'app.dao._sequelize.models', {});
     const Application = models.application;
-    const User = models.user;
+    // const User = models.user;
     // const Note = models.note;
     const { id } = request.params;
 
     return await Application.findOne({
       where: { id },
-      include: [
-        { model: User },
-        // { model: Note }
-      ]
+      // include: [
+      //   { model: User },
+      //   { model: Note }
+      // ]
     });
   }
 
