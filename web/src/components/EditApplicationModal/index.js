@@ -30,16 +30,10 @@ const CollectionEditForm = Form.create()(
 );
 
 class Index extends Component {
-  state = {
-    visible: false,
-  };
-
-  showModal = () => {
-    this.setState({ visible: true });
-  };
-
   handleCancel = () => {
-    this.setState({ visible: false });
+    if (typeof this.props.onCancel === 'function') {
+      this.props.onCancel();
+    }
   };
 
   handleEdit = () => {
@@ -63,22 +57,14 @@ class Index extends Component {
   };
 
   render() {
-    const { loading, button, data = {}, style = {} } = this.props;
-    const buttonView = button || (
-      loading
-        ? <Button type="primary" loading>Loading</Button>
-        : <Button type="primary" onClick={this.showModal}>Edit Application</Button>
-    );
+    const { visible, data = {}, style = {} } = this.props;
 
     return (
-      <section style={style} className="edit-application-section">
-        <span onClick={this.showModal}>
-          {buttonView}
-        </span>
+      <section style={style} className="edit-note-section">
         <CollectionEditForm
           ref={this.saveFormRef}
-          visible={this.state.visible}
           data={data}
+          visible={visible}
           onCancel={this.handleCancel}
           onEdit={this.handleEdit}
         />

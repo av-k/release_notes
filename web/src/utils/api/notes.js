@@ -15,12 +15,12 @@ export function createNote(data) {
   return axios.put('/note/create', data);
 }
 
-export function updateNote(id, options) {
+export function editNote(id, options) {
   const axios = getAxios();
   return axios.post(`/note/${id}`, options);
 }
 
 export function deleteNote(id) {
   const axios = getAxios();
-  return axios.post(`/note/${id}`);
+  return axios.delete(`/note/${id}`);
 }

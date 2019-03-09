@@ -15,18 +15,8 @@ export default function noteUpdate(props = {}) {
   async function errorHandler(props) {
     return new Promise(async (resolve) => {
       const { request } = props;
-      const models = _.get(server, 'app.dao._sequelize.models', {});
       let error;
       let errorOptions = { statusCode: 400 };
-
-      if (request.payload.applicationId) {
-        const Application = models.application;
-        const applicationIsExists = await Application.count({ where: { id: request.payload.applicationId } }) > 0;
-
-        if (!applicationIsExists) {
-          error = new Error('Incorrect value for field `applicationId`. Application not exists.');
-        }
-      }
 
       if (request.payload.releaseDate) {
         const releaseDateMoment = moment(request.payload.releaseDate);
@@ -56,7 +46,7 @@ export default function noteUpdate(props = {}) {
     const { id } = request.params;
     const helpers = request.server.app.helpers;
     const fields = [
-      'applicationId', 'version', 'description', 'published', 'releaseDate', 'updatedAt'
+      'version', 'description', 'published', 'releaseDate', 'updatedAt'
     ];
     const note = await Note.findOne({ where: { id } });
     const anyErrors = await errorHandler({ request });
@@ -90,8 +80,6 @@ export default function noteUpdate(props = {}) {
           id: Joi.number()
         },
         payload: Joi.object({
-          applicationId: Joi.number()
-            .optional(),
           description: Joi.string()
             .optional(),
           published: Joi.boolean()

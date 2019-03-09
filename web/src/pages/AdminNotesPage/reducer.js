@@ -5,7 +5,13 @@ import {
   LOAD_NOTES_UPDATE_FILTERS,
   CREATE_NOTE,
   CREATE_NOTE_SUCCESS,
-  CREATE_NOTE_ERROR
+  CREATE_NOTE_ERROR,
+  EDIT_NOTE,
+  EDIT_NOTE_SUCCESS,
+  EDIT_NOTE_ERROR,
+  DELETE_NOTE,
+  DELETE_NOTE_SUCCESS,
+  DELETE_NOTE_ERROR
 } from './constants';
 import { updateState } from 'utils/reducer';
 
@@ -14,9 +20,17 @@ const initialState = {
   createNote: {
     loading: false
   },
+  editNote: {
+    loading: false
+  },
+  deleteNote: {
+    loading: false
+  },
   notes: {
+    filter: {},
     loading: false,
-    filter: {}
+    meta: {},
+    results: []
   }
 };
 
@@ -28,7 +42,8 @@ function reducer(state = initialState, action = {}) {
       return updateState(state, {
         error: null,
         notes: {
-          loading: true
+          loading: true,
+          ...payload
         }
       });
 
@@ -44,9 +59,11 @@ function reducer(state = initialState, action = {}) {
     case LOAD_NOTES_LIST_ERROR:
       return updateState(state, {
         notes: {
-          loading: false
-        },
-        ...payload
+          loading: false,
+          meta: {},
+          results: [],
+          ...payload
+        }
       });
 
     case LOAD_NOTES_UPDATE_FILTERS:
@@ -75,7 +92,55 @@ function reducer(state = initialState, action = {}) {
     case CREATE_NOTE_ERROR:
       return updateState(state, {
         createNote: {
-          loading: false,
+          loading: false
+        },
+        ...payload
+      });
+
+    case EDIT_NOTE:
+      return updateState(state, {
+        error: null,
+        editNote: {
+          loading: true
+        }
+      });
+
+    case EDIT_NOTE_SUCCESS:
+      return updateState(state, {
+        error: null,
+        editNote: {
+          loading: false
+        }
+      });
+
+    case EDIT_NOTE_ERROR:
+      return updateState(state, {
+        editNote: {
+          loading: false
+        },
+        ...payload
+      });
+
+    case DELETE_NOTE:
+      return updateState(state, {
+        error: null,
+        deleteNote: {
+          loading: true
+        }
+      });
+
+    case DELETE_NOTE_SUCCESS:
+      return updateState(state, {
+        error: null,
+        deleteNote: {
+          loading: false
+        }
+      });
+
+    case DELETE_NOTE_ERROR:
+      return updateState(state, {
+        deleteNote: {
+          loading: false
         },
         ...payload
       });

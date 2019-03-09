@@ -5,29 +5,38 @@ import {
   LOAD_NOTES_LIST,
   LOAD_NOTES_LIST_SUCCESS,
   LOAD_NOTES_LIST_ERROR,
+  LOAD_NOTES_UPDATE_FILTERS,
   CREATE_NOTE,
   CREATE_NOTE_SUCCESS,
   CREATE_NOTE_ERROR,
-  LOAD_NOTES_UPDATE_FILTERS
+  EDIT_NOTE,
+  EDIT_NOTE_SUCCESS,
+  EDIT_NOTE_ERROR,
+  DELETE_NOTE,
+  DELETE_NOTE_SUCCESS,
+  DELETE_NOTE_ERROR
 } from './constants';
 import * as notesRequests from 'utils/api/notes'
 
 /**
  *
- * @param applicationId
+ * @param filter
  * @returns {Function}
  */
-export function loadNotes(applicationId) {
-  return async (dispatch) => {
+export function loadNotes(filter) {
+  return async (dispatch, getState) => {
+    const { adminPanel } = getState();
+    const storeFilter = lodash.get(adminPanel, 'notes.filter', {});
+
     dispatch({
       type: LOAD_NOTES_LIST
     });
 
     try {
-      const response = await notesRequests.loadNotes({ applicationId });
+      const response = await notesRequests.loadNotes(filter || storeFilter);
       return dispatch({
         type: LOAD_NOTES_LIST_SUCCESS,
-        payload: response
+        payload: { filter: filter || storeFilter, ...response }
       });
     } catch(error) {
       return dispatch({
@@ -41,6 +50,22 @@ export function loadNotes(applicationId) {
       });
     }
   };
+}
+
+/**
+ *
+ * @param filter
+ * @returns {Function}
+ */
+export function updateFilter(filter) {
+  return async (dispatch) => {
+    dispatch({
+      type: LOAD_NOTES_UPDATE_FILTERS,
+      payload: {
+        filter
+      }
+    });
+  }
 }
 
 /**
@@ -80,17 +105,71 @@ export function createNote(data) {
 
 /**
  *
- * @param filter
- * @returns {Function}
+ * @param id
+ * @param data
+ * @returns {function(*): Promise<any>}
  */
-export function updateFilter(filter) {
-  return async (dispatch) => {
-    dispatch({
-      type: LOAD_NOTES_UPDATE_FILTERS,
-      payload: {
-        filter
+export function editNote(id, data) {
+  return (dispatch) => {
+    return new Promise(async (resolve) => {
+      dispatch({
+        type: EDIT_NOTE
+      });
+
+      try {
+        const response = await notesRequests.editNote(id, data);
+        resolve(response);
+        return dispatch({
+          type: EDIT_NOTE_SUCCESS,
+          payload: {...response}
+        });
+      } catch (error) {
+        resolve({ error });
+        return dispatch({
+          type: EDIT_NOTE_ERROR,
+          payload: {
+            error: {
+              id: uuid.v4(),
+              ...lodash.get(error, 'data', {})
+            }
+          }
+        });
       }
     });
-  }
+  };
 }
 
+/**
+ *
+ * @param id
+ * @returns {Function}
+ */
+export function deleteNote(id) {
+  return (dispatch) => {
+    return new Promise(async (resolve) => {
+      dispatch({
+        type: DELETE_NOTE
+      });
+
+      try {
+        const response = await notesRequests.deleteNote(id);
+        resolve(response);
+        return dispatch({
+          type: DELETE_NOTE_SUCCESS,
+          payload: {...response}
+        });
+      } catch (error) {
+        resolve({ error });
+        return dispatch({
+          type: DELETE_NOTE_ERROR,
+          payload: {
+            error: {
+              id: uuid.v4(),
+              ...lodash.get(error, 'data', {})
+            }
+          }
+        });
+      }
+    });
+  };
+}

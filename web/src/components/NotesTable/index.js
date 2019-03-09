@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Pagination, Icon, Popconfirm, message } from 'antd';
+import { Table, Pagination, Icon, Popconfirm } from 'antd';
 import lodash from 'lodash';
 import moment from 'moment';
 import uuid from 'uuid';
 //
 import { ROUTES } from 'config/constants';
 
-const DATA_FORMAT = 'YYYY-MM-DD HH:mm';
+const DATE_FORMAT = 'YYYY-MM-DD HH:mm';
 
 class ApplicationTable extends React.PureComponent {
   getColumns = () => {
@@ -31,7 +31,7 @@ class ApplicationTable extends React.PureComponent {
         title: 'Created',
         dataIndex: 'createdAt',
         key: 'created',
-        render: (text) => moment(text).format(DATA_FORMAT)
+        render: (text) => moment(text).format(DATE_FORMAT)
       },
       {
         title: 'Action',
@@ -82,18 +82,15 @@ class ApplicationTable extends React.PureComponent {
 
     return (
       <Fragment>
-        <Table columns={this.getColumns()}
-               dataSource={dataSource}
-               pagination={false}
-               loading={loading} />
-        <Pagination style={{
-                      marginTop: '30px',
-                      textAlign: 'center'
-                    }}
+        <Pagination style={{ marginBottom: '30px', textAlign: 'center' }}
                     defaultCurrent={defaultCurrent}
                     pageSize={pageSize}
                     total={totalCount}
                     onChange={this.onChange} />
+        <Table columns={this.getColumns()}
+               dataSource={dataSource}
+               pagination={false}
+               loading={loading} />
       </Fragment>
     );
   }

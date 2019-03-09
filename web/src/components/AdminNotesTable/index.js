@@ -1,16 +1,14 @@
 import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
-import { Table, Pagination, Icon, Popconfirm } from 'antd';
+import { Table, Pagination, Icon, Popconfirm, Switch } from 'antd';
 import lodash from 'lodash';
 import moment from 'moment';
 import uuid from 'uuid';
 //
-import { ROUTES } from 'config/constants';
-import EditApplicationModal from 'components/EditApplicationModal';
+import EditNoteModal from 'components/EditNoteModal';
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm';
 
-class AdminApplicationsTable extends React.PureComponent {
+class AdminNotesTable extends React.PureComponent {
   state = {
     visible: false,
     currentData: {}
@@ -24,20 +22,36 @@ class AdminApplicationsTable extends React.PureComponent {
         key: 'id'
       },
       {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        render: (text, data) => {
-          return (
-            <Link to={ROUTES.ADMIN_NOTES.replace(':applicationId', data.id)}>{text}</Link>
-          );
-        }
+        title: 'ApplicationID',
+        dataIndex: 'applicationId',
+        key: 'applicationId'
       },
       {
-        title: 'Created',
-        dataIndex: 'createdAt',
-        key: 'created',
+        title: 'Version',
+        dataIndex: 'version',
+        key: 'version'
+      },
+      {
+        title: 'Description',
+        dataIndex: 'description',
+        key: 'description',
+        render: (text, data) => (
+          <span>{text}</span>
+        )
+      },
+      {
+        title: 'Release Date',
+        dataIndex: 'releaseDate',
+        key: 'releaseDate',
         render: (text) => moment(text).format(DATE_FORMAT)
+      },
+      {
+        title: 'Published',
+        dataIndex: 'published',
+        key: 'published',
+        render: (statement, data) => (
+          <Switch defaultChecked={statement} onChange={event => this.onChangePublish(event, data)} />
+        )
       },
       {
         title: 'Action',
@@ -49,7 +63,7 @@ class AdminApplicationsTable extends React.PureComponent {
                 <Icon type="edit" />
                 <span>&nbsp;Edit</span>
               </a>
-              <Popconfirm title="Are you sure delete this application?"
+              <Popconfirm title="Are you sure delete this note?"
                           onConfirm={e => this.props.onDelete(data)}
                           okText="Yes"
                           cancelText="No">
@@ -71,6 +85,12 @@ class AdminApplicationsTable extends React.PureComponent {
 
   onChange = (page) => {
     this.props.onChange({ page });
+  };
+
+  onChangePublish = (statement, data = {}) => {
+    if (typeof this.props.onChangePublish === 'function') {
+      this.props.onChangePublish({...data, published: statement});
+    }
   };
 
   onEdit = (data = {}) => {
@@ -111,13 +131,13 @@ class AdminApplicationsTable extends React.PureComponent {
                dataSource={dataSource}
                pagination={false}
                loading={loading} />
-        <EditApplicationModal visible={visible}
-                              data={currentData}
-                              onCancel={this.onCancel}
-                              onSubmit={this.onSubmit} />
+        <EditNoteModal visible={visible}
+                       data={currentData}
+                       onCancel={this.onCancel}
+                       onSubmit={this.onSubmit} />
       </Fragment>
     );
   }
 }
 
-export default AdminApplicationsTable;
+export default AdminNotesTable;

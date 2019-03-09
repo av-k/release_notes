@@ -64,7 +64,7 @@ export default function noteCreate(props = {}) {
 
   return {
     method: 'PUT',
-    path: '/note',
+    path: '/note/create',
     config: {
       handler,
       description: 'Create new release note',

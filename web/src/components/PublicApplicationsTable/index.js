@@ -7,7 +7,7 @@ import uuid from 'uuid';
 //
 import { ROUTES } from 'config/constants';
 
-const DATA_FORMAT = 'YYYY-MM-DD HH:mm';
+const DATE_FORMAT = 'YYYY-MM-DD HH:mm';
 
 class PublicApplicationsTable extends React.PureComponent {
   getColumns = () => {
@@ -31,7 +31,7 @@ class PublicApplicationsTable extends React.PureComponent {
         title: 'Created',
         dataIndex: 'createdAt',
         key: 'created',
-        render: (text) => moment(text).format(DATA_FORMAT)
+        render: (text) => moment(text).format(DATE_FORMAT)
       },
       {
         title: 'Action',
@@ -63,18 +63,15 @@ class PublicApplicationsTable extends React.PureComponent {
 
     return (
       <Fragment>
-        <Table columns={this.getColumns()}
-               dataSource={dataSource}
-               pagination={false}
-               loading={loading} />
-        <Pagination style={{
-                      marginTop: '30px',
-                      textAlign: 'center'
-                    }}
+        <Pagination style={{ marginBottom: '30px', textAlign: 'center' }}
                     defaultCurrent={defaultCurrent}
                     pageSize={pageSize}
                     total={totalCount}
                     onChange={this.onChange} />
+        <Table columns={this.getColumns()}
+               dataSource={dataSource}
+               pagination={false}
+               loading={loading} />
       </Fragment>
     );
   }
