@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import { push } from 'connected-react-router'
 import lodash from 'lodash';
-import { Icon } from 'antd';
+import { Icon, Divider } from 'antd';
 import { toast } from 'react-toastify';
 import queryString from 'query-string';
 //
@@ -128,9 +128,12 @@ class AdminNotesPage extends React.PureComponent {
     const payload = {
       version,
       description,
-      published: props.published == 1,
-      releaseDate: props.releaseDate.format(DATE_FORMAT)
+      published: props.published == 1
     };
+
+    if (props.releaseDate) {
+      payload.releaseDate = props.releaseDate.format(DATE_FORMAT);
+    }
 
     editNote(id, payload).then((response = {}) => {
       if (!response.error) {
@@ -174,12 +177,13 @@ class AdminNotesPage extends React.PureComponent {
           />
         </Helmet>
         <Wrapper>
-          <h1>
+          <Divider><h1>Release Notes List Management</h1></Divider>
+          <h2>
             {loadApplicationLoading
               ? <Icon type="loading"/>
               : `Application: ${application.data.name} | ID: ${application.data.id}`
             }
-          </h1>
+          </h2>
           <CreateNoteWrapper>
             <CreateNoteButton onSubmit={this.createNoteHandler} loading={createApplicationLoading} />
           </CreateNoteWrapper>

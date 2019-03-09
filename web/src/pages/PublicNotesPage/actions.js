@@ -18,11 +18,14 @@ import * as applicationsRequests from 'utils/api/applications';
  * @param filter
  * @returns {Function}
  */
-export function loadNotes(filter) {
+export function loadNotes(filter = {}) {
   return async (dispatch) => {
     dispatch({
       type: LOAD_NOTES_LIST
     });
+
+    // public only (some type of hardcode - but can be implemented as different end point)
+    filter.published = true;
 
     try {
       const response = await notesRequests.loadNotes(filter);

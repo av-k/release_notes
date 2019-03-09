@@ -5,30 +5,12 @@ import {
   LOAD_APPLICATION,
   LOAD_APPLICATION_SUCCESS,
   LOAD_APPLICATION_ERROR,
-  CLEAR_NOTES_LIST,
-  CREATE_NOTE,
-  CREATE_NOTE_SUCCESS,
-  CREATE_NOTE_ERROR,
-  EDIT_NOTE,
-  EDIT_NOTE_SUCCESS,
-  EDIT_NOTE_ERROR,
-  DELETE_NOTE,
-  DELETE_NOTE_SUCCESS,
-  DELETE_NOTE_ERROR
+  CLEAR_NOTES_LIST
 } from './constants';
 import { updateState } from 'utils/reducer';
 
 const initialState = {
   error: null,
-  createNote: {
-    loading: false
-  },
-  editNote: {
-    loading: false
-  },
-  deleteNote: {
-    loading: false
-  },
   notes: {
     filter: {},
     loading: false,
@@ -80,78 +62,6 @@ function reducer(state = initialState, action = {}) {
           meta: {},
           results: [],
         }
-      });
-
-    case CREATE_NOTE:
-      return updateState(state, {
-        error: null,
-        createNote: {
-          loading: true
-        }
-      });
-
-    case CREATE_NOTE_SUCCESS:
-      return updateState(state, {
-        error: null,
-        createNote: {
-          loading: false
-        }
-      });
-
-    case CREATE_NOTE_ERROR:
-      return updateState(state, {
-        createNote: {
-          loading: false
-        },
-        ...payload
-      });
-
-    case EDIT_NOTE:
-      return updateState(state, {
-        error: null,
-        editNote: {
-          loading: true
-        }
-      });
-
-    case EDIT_NOTE_SUCCESS:
-      return updateState(state, {
-        error: null,
-        editNote: {
-          loading: false
-        }
-      });
-
-    case EDIT_NOTE_ERROR:
-      return updateState(state, {
-        editNote: {
-          loading: false
-        },
-        ...payload
-      });
-
-    case DELETE_NOTE:
-      return updateState(state, {
-        error: null,
-        deleteNote: {
-          loading: true
-        }
-      });
-
-    case DELETE_NOTE_SUCCESS:
-      return updateState(state, {
-        error: null,
-        deleteNote: {
-          loading: false
-        }
-      });
-
-    case DELETE_NOTE_ERROR:
-      return updateState(state, {
-        deleteNote: {
-          loading: false
-        },
-        ...payload
       });
 
     case LOAD_APPLICATION:

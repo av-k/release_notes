@@ -1,6 +1,7 @@
 'use strict';
 import _ from 'lodash';
 import Joi from 'joi';
+import sequelize from 'sequelize';
 
 export default function notesList(props = {}) {
   const { server } = props;
@@ -8,8 +9,8 @@ export default function notesList(props = {}) {
   async function handler(request, h) {
     const models = _.get(server, 'app.dao._sequelize.models', {});
     const Note = models.note;
-    const { pagination, limit, page } = request.query;
-    const filterFields = ['applicationId', 'userId', 'version', 'published'];
+    const { pagination, limit, page, version } = request.query;
+    const filterFields = ['applicationId', 'userId', 'published'];
     const where = Object.keys(request.query).reduce((accumulator, field) => {
       if (!!~filterFields.indexOf(field)) {
         accumulator[field] = request.query[field];
@@ -18,7 +19,10 @@ export default function notesList(props = {}) {
     }, {});
 
     const results = await Note.findAndCountAll({
-      where,
+      where: sequelize.and(
+        where,
+        version ? sequelize.where(sequelize.literal('version'), '>', version) : {}
+      ),
       ...(() => !pagination ? {} : {
         offset: page * limit,
         limit: limit

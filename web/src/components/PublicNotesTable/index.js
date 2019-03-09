@@ -6,7 +6,7 @@ import uuid from 'uuid';
 //
 import { ColDescriptionWrapper } from './index.styled';
 
-const DATE_FORMAT = 'YYYY-MM-DD HH:mm';
+const DATE_FORMAT = 'YYYY-MM-DD';
 
 class PublicNotesTable extends React.PureComponent {
   getColumns = () => {
@@ -47,6 +47,10 @@ class PublicNotesTable extends React.PureComponent {
     ];
 
     return columns;
+  };
+
+  onChange = (page) => {
+    this.props.onChange({ page });
   };
 
   render() {

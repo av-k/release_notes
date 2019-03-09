@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import { push } from 'connected-react-router'
+import { Divider } from 'antd';
 import lodash from 'lodash';
 import { toast } from 'react-toastify';
 import queryString from 'query-string';
@@ -93,6 +94,7 @@ class HomePage extends React.PureComponent {
           />
         </Helmet>
         <Wrapper>
+          <Divider><h1>Applications List</h1></Divider>
           {this.getTableContent()}
         </Wrapper>
       </article>

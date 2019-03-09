@@ -27,7 +27,7 @@ import * as applicationsRequests from 'utils/api/applications';
  * @param filter
  * @returns {Function}
  */
-export function loadNotes(filter) {
+export function loadNotes(filter = {}) {
   return async (dispatch) => {
     dispatch({
       type: LOAD_NOTES_LIST

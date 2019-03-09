@@ -7,7 +7,7 @@ import uuid from 'uuid';
 import EditNoteModal from 'components/EditNoteModal';
 import { ColDescriptionWrapper } from './index.styled';
 
-const DATE_FORMAT = 'YYYY-MM-DD HH:mm';
+const DATE_FORMAT = 'YYYY-MM-DD';
 
 class AdminNotesTable extends React.PureComponent {
   state = {

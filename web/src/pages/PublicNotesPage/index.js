@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import { push } from 'connected-react-router'
 import lodash from 'lodash';
-import { Icon } from 'antd';
+import { Form, Input, Icon, Divider } from 'antd';
 import { toast } from 'react-toastify';
 import queryString from 'query-string';
 //
@@ -76,7 +76,7 @@ class PublicNotesPage extends React.PureComponent {
         loading={notes.loading}
         pageSize={pageSize}
         defaultCurrent={currentPage + 1}
-        onChangePublish={this.tableOnChange}/>
+        onChange={(props) => this.tableOnChange({pageSize, ...props})} />
     );
   };
 
@@ -89,13 +89,66 @@ class PublicNotesPage extends React.PureComponent {
       page: page - 1, limit: pageSize
     };
     const newQuery = queryString.stringify(filterProps);
+
     loadNotes(filterProps);
     push(`${location.pathname}?${newQuery}`);
+  };
+
+  onFilterChange = (props = {}) => {
+    const { loadNotes, location, push } = this.props;
+    const { version } = props;
+    const queryParams = this.getFilterParamsFromQuery();
+    const filterProps = {
+      ...queryParams,
+    };
+
+    if (version) {
+      filterProps.version = version;
+    } else {
+      delete filterProps.version;
+    }
+
+    const newQuery = queryString.stringify(filterProps);
+
+    loadNotes(filterProps);
+    push(`${location.pathname}?${newQuery}`);
+  };
+
+  getFilterForm = (props = {}) => {
+    const FilterForm = Form.create()((params = {}) => {
+      const { form } = params;
+      const { getFieldDecorator } = form;
+      const { data = {}, onChange } = props;
+
+      return (
+        <Form layout="vertical">
+          <Form.Item>
+            {getFieldDecorator('version', {
+              initialValue: data.version,
+              rules: [
+                { pattern: /^(\d+\.)(\d+\.)(\*|\d+)$/, message: 'Expected format `xxx.yyy.zzz`. Where `x/y/s` are numbers!' },
+                { message: 'Please input the version of application!' }
+              ],
+            })(
+              <Input.Search
+                style={{maxWidth: '320px'}}
+                placeholder="Version is greater than"
+                onSearch={event => onChange({ version: event })}
+                enterButton
+              />
+            )}
+          </Form.Item>
+        </Form>
+      )
+    });
+
+    return <FilterForm />
   };
 
   render() {
     const { publicNotes } = this.props;
     const { application } = publicNotes;
+    const queryParams = this.getFilterParamsFromQuery();
     const loadApplicationLoading = lodash.get(publicNotes, 'application.loading', false);
 
     return (
@@ -108,12 +161,14 @@ class PublicNotesPage extends React.PureComponent {
           />
         </Helmet>
         <Wrapper>
-          <h1>
+          <Divider><h1>Release Notes List</h1></Divider>
+          <h2>
             {loadApplicationLoading
               ? <Icon type="loading"/>
               : `Application: ${application.data.name} | ID: ${application.data.id}`
             }
-          </h1>
+          </h2>
+          {this.getFilterForm({ data: queryParams, onChange: this.onFilterChange })}
           {this.getTableContent()}
         </Wrapper>
       </article>
