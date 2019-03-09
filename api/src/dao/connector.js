@@ -1,5 +1,6 @@
 'use strict';
 import Sequelize from 'sequelize';
+import { exec } from 'child_process';
 import config from '../config';
 
 class Connector {
@@ -11,16 +12,45 @@ class Connector {
   }
 
   init() {
-    this._sequelize = new this._Sequelize(config.DB_NAME, config.DB_USERNAME, config.DB_PASSWORD, {
-      host: config.DB_HOST,
-      dialect: config.DB_DIALECT,
-      pool: {
-        max: 5,
-        min: 0,
-        idle: 20000,
-        ...config.DB_POOL
-      },
-    })
+    this._sequelize = new this._Sequelize(config.DB_URL);
+  }
+
+  runMigrate() {
+    return new Promise((resolve, reject) => {
+      const migrate = exec(
+        'sequelize db:migrate',
+        {env: process.env},
+        (err, stdout, stderr) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        }
+      );
+
+      migrate.stdout.pipe(process.stdout);
+      migrate.stderr.pipe(process.stderr);
+    });
+  }
+
+  runSeed() {
+    return new Promise((resolve, reject) => {
+      const seek = exec(
+        'sequelize db:seed:all',
+        {env: process.env},
+        (err, stdout, stderr) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        }
+      );
+
+      seek.stdout.pipe(process.stdout);
+      seek.stderr.pipe(process.stderr);
+    });
   }
 
   test() {

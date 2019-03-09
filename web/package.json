@@ -1,12 +1,12 @@
 {
-  "name": "visitor_chat",
-  "version": "0.0.1",
+  "name": "web",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --config webpack/webpack.development.js",
     "build": "webpack --config webpack/webpack.production.js",
-    "serve": "serve -l 8080 public --single"
+    "serve": "serve -l 3000 public --single"
   },
   "author": "",
   "license": "ISC",

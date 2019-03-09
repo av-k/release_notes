@@ -5,10 +5,13 @@ COPY package*.json ./
 RUN npm install
 FROM dependencies AS build
 WORKDIR /app
-COPY src /app
+COPY . /app
+
 FROM node:8.9-alpine AS release
 WORKDIR /app
+RUN npm -g install sequelize-cli
 COPY --from=dependencies /app/package.json ./
 RUN npm install --only=production
 COPY --from=build /app ./
-CMD ["node", "index.js"]
+
+CMD ["node", "src/index.js"]

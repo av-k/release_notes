@@ -22,8 +22,8 @@ export async function run(props = {}) {
       version: Pack.version
     },
     jsonEditor: true,
-    documentationPage: !config.isPROD,
-    debug: !config.isPROD
+    documentationPage: true, // !config.isPROD
+    debug: true //!config.isPROD
   };
 
   await server.register([

@@ -14,15 +14,18 @@ export async function run(props = {}) {
   const { dir, server } = props;
   const normalizedPath = path.join(__dirname, dir);
 
-
   server.app.dao = new Connector();
   server.app.dao.init();
 
   // Connection Test
   try {
     await server.app.dao.test();
+    console.info('DB:TEST:OK!');
+    // Run Tasks
+    await server.app.dao.runMigrate();
+    await server.app.dao.runSeed();
   } catch(error) {
-    console.info('DB: ', error);
+    console.info('DB:TEST:ERROR: ', error);
   }
 
   // Bind Models
