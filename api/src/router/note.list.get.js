@@ -10,23 +10,21 @@ export default function notesList(props = {}) {
     const models = _.get(server, 'app.dao._sequelize.models', {});
     const Note = models.note;
     const { pagination, limit, page, version } = request.query;
-    const filterFields = ['applicationId', 'userId', 'published'];
-    const where = Object.keys(request.query).reduce((accumulator, field) => {
-      if (!!~filterFields.indexOf(field)) {
-        accumulator[field] = request.query[field];
-      }
-      return accumulator;
-    }, {});
-
+    const query = (query => {
+      delete query.version;
+      return query;
+    })(request.query);
+    const where = Note.composeWhere({...request, query}, { query: true });
+    const whereWithVersion = sequelize.and(
+      where, sequelize.where(sequelize.literal('version'), '>', version)
+    );
+    const paginationOptions = !pagination ? {} : {
+      offset: page * limit,
+      limit: limit
+    };
     const results = await Note.findAndCountAll({
-      where: sequelize.and(
-        where,
-        version ? sequelize.where(sequelize.literal('version'), '>', version) : {}
-      ),
-      ...(() => !pagination ? {} : {
-        offset: page * limit,
-        limit: limit
-      })()
+      where: version ? whereWithVersion : where,
+      ...paginationOptions
     });
     return {
       results: results.rows,
@@ -53,7 +51,7 @@ export default function notesList(props = {}) {
           userId: Joi.number(),
           published: Joi.boolean(),
           version: Joi.string()
-            .description('Expected format `xxx.yyy.zzz`. Where `x/y/s` are numbers.')
+            .description('Expected format `xxx.yyy.zzz`. Where `x/y/s` are numbers - will found version which more than.')
             .regex(/^(\d+\.)(\d+\.)(\*|\d+)$/),
           limit: Joi.number().integer(),
           page: Joi.number().integer(),

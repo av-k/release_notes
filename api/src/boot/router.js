@@ -22,14 +22,12 @@ export function makeRouterPath(pathWithoutPrefix) {
  */
 function payloadHandler(props = {}) {
   const { request, fields } = props;
-  const payload = Object.keys(request.payload).reduce((accumulator, field) => {
-    if (!!~fields.indexOf(field)) {
+  return Object.keys(request.payload).reduce((accumulator, field) => {
+    if (fields.includes(field)) {
       accumulator[field] = request.payload[field];
     }
     return accumulator;
   }, {});
-
-  return payload;
 }
 
 /**

@@ -9,20 +9,13 @@ export default function applicationsList(props = {}) {
     const models = _.get(server, 'app.dao._sequelize.models', {});
     const Application = models.application;
     const { pagination, limit, page } = request.query;
-    const filterFields = ['name', 'userId'];
-    const where = Object.keys(request.query).reduce((accumulator, field) => {
-      if (!!~filterFields.indexOf(field)) {
-        accumulator[field] = request.query[field];
-      }
-      return accumulator;
-    }, {});
-
+    const where = Application.composeWhere(request, { query: true });
+    const paginationOptions = !pagination ? {} : {
+      offset: page * limit,
+      limit: limit
+    };
     const results = await Application.findAndCountAll({
-      where,
-      ...(() => !pagination ? {} : {
-        offset: page * limit,
-        limit: limit
-      })()
+      where, ...paginationOptions
     });
     return {
       results: results.rows,
