@@ -1,5 +1,7 @@
 # Example Application with Backend and Frontend parts
 
+![ScreenShot](https://repository-images.githubusercontent.com/174470904/bf0ffc80-75e4-11e9-88fa-79aacce8325a)
+
 ### Technology stack:
 * NodeJS (lightweight framework [Hapi.js](https://hapijs.com/))
 * PostgreSQL (ORM [Sequelize](http://docs.sequelizejs.com/))
